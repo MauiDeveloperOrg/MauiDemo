@@ -18,7 +18,7 @@ MauiApp4: 这是一个设置相关的demo，
 1  你可以通过设置条件编译去根据不同的平台加载对应平台的nuget包
 2  你可以通过设置条件编译开启maui程序windows平台直接双击exe运行（unpack）
     
-MauiApp5: 无
+MauiApp5: 这是一个使用CollectionView的例子，使用MVVM的方式
 
 
 MauiApp6: 这是一个使用skiasharp 播放Lottie动画的demo
