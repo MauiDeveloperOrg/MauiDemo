@@ -1,0 +1,7 @@
+﻿<Project>
+	
+	<!--这样的设计可以让你当前解决方案下的所有项目都能获取到package-->
+	<!--<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	</ItemGroup>-->
+</Project>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:skiasharp="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             x:Class="MauiApp6.Views.MainPage"
+             Title="MainPage">
+
+    <Grid>
+
+        <skiasharp:SKLottieView WidthRequest="200" 
+                                HeightRequest="200" 
+                                Source="Lottie/dashboard.json" RepeatCount="-1" HorizontalOptions="Center"/>
+
+    </Grid>
+    
+    
+</ContentPage>

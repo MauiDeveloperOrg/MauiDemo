@@ -1,0 +1,13 @@
+﻿<Project>
+	<!--这个属性可以让你跟obj say goodbye-->
+	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('windows'))">
+		<BaseIntermediateOutputPath>$(MSBuildThisFileDirectory).vs\$(SolutionName)\Intermediate\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+	</PropertyGroup>
+	<PropertyGroup>
+		<!--这个属性可以让你规划统一生成路径-->
+		<OutputPath>$(MSBuildThisFileDirectory)Binary\</OutputPath>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+</Project>
