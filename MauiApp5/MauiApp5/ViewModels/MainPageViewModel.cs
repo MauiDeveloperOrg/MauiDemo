@@ -1,6 +1,8 @@
-﻿using MauiApp2.Models;
+﻿using CommunityToolkit.Mvvm.Input;
+using MauiApp2.Models;
 using MauiApp2.ViewModels;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace MauiApp1.ViewModels;
 
@@ -18,7 +20,16 @@ public partial class MainPageViewModel : BasicViewModel
 
             Students.Add(student);
         }
+
+        CheckedCommand = new Command<object>(t =>
+        {
+
+        });
     }
 
     public ObservableCollection<Student> Students { get; } = new();
+
+    public ICommand CheckedCommand { get; }
+
+
 }
