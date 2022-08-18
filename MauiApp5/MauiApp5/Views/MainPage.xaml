@@ -2,6 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit ="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewmodels="using:MauiApp1.ViewModels"
+             xmlns:views="using:MauiApp1.Views"
              x:Class="MauiApp1.Views.MainPage"
              Title="MainPage">
 
@@ -12,7 +14,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         
-        <ListView ItemsSource="{Binding Students}">
+        <ListView x:Name="PART_listview" ItemsSource="{Binding Students}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
@@ -20,10 +22,16 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
                                 <RowDefinition/>
+                                <RowDefinition/>
                             </Grid.RowDefinitions>
 
                             <Label Grid.Row="0" Text="{Binding Name}"/>
                             <Label Grid.Row="1" Text="{Binding Number}"/>
+                            <CheckBox Grid.Row="2" BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:MainPage}}, Path=BindingContext}">
+                                <CheckBox.Behaviors>
+                                    <toolkit:EventToCommandBehavior EventName="CheckedChanged"  Command="{Binding CheckedCommand}"/>
+                                </CheckBox.Behaviors>
+                            </CheckBox>
                         </Grid>
                     </ViewCell>
                 </DataTemplate>
