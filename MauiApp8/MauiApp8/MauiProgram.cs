@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui;
+using MauiApp8.Extensions;
 using MauiApp8.ViewModels;
 using MauiApp8.Views;
 
@@ -16,7 +17,8 @@ public static class MauiProgram
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-            });
+            })
+            .UseMappers();
 
         RegisterViewAndViewModels(builder.Services);
 

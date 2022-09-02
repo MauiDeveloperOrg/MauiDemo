@@ -9,14 +9,20 @@
              Title="MainPage">
 
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         <customcontrols:ProgressButton HorizontalOptions="Center" VerticalOptions="Center" Text="Loading" IsInProgressing="{Binding IsInProgress}" Padding="10">
             <customcontrols:ProgressButton.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding TappedCommand}"/>
             </customcontrols:ProgressButton.GestureRecognizers>
         </customcontrols:ProgressButton>
 
-      
+        <customcontrols:OutlinedEntry WidthRequest="200">
+            
+        </customcontrols:OutlinedEntry>
+
 
     </Grid>
     
