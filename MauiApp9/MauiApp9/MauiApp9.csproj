@@ -49,17 +49,13 @@
 	</ItemGroup>
 		
 	<ItemGroup>
-	  <PackageReference Include="CommunityToolkit.Maui" Version="1.2.0" />
-	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+	  <None Remove="Resources\Raw\startup_sound.mp3" />
 	</ItemGroup>
 		
 	<ItemGroup>
-	  <MauiXaml Update="CustomControls\OutlinedEntry.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="CustomControls\ProgressButton.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
+	  <PackageReference Include="CommunityToolkit.Maui" Version="1.2.0" />
+	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />	  
+	  <PackageReference Include="Plugin.Maui.Audio" Version="0.1.0-preview1" />
 	</ItemGroup>
 		
 

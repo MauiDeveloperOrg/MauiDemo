@@ -32,7 +32,7 @@
 
 	<ItemGroup Condition="$(TargetFramework.Contains('-windows'))">
 		<!-- Required - WinUI does not yet have buildTransitive for everything -->
-		<PackageReference Include="PInvoke.User32" Version="0.7.104" />
+		<PackageReference Include="PInvoke.User32" Version="0.7.124" />
 	</ItemGroup>
 		
 	<ItemGroup>

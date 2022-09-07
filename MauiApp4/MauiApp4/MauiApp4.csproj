@@ -62,7 +62,7 @@
 	<!--这是一个专属于Windows的设定，让他成为Windows忠诚的伴侣-->
 	<ItemGroup Condition="$(TargetFramework.Contains('-windows'))">
 		<!-- Required - WinUI does not yet have buildTransitive for everything -->
-		<PackageReference Include="PInvoke.User32" Version="0.7.104" />
+		<PackageReference Include="PInvoke.User32" Version="0.7.124" />
 	</ItemGroup>
 
 </Project>

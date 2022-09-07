@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Maui;
-using MauiApp9.Extensions;
 using MauiApp9.ViewModels;
 using MauiApp9.Views;
+using Plugin.Maui.Audio;
 
 namespace MauiApp9;
 
@@ -17,10 +17,11 @@ public static class MauiProgram
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-            })
-            .UseMappers();
+            });
+
 
         RegisterViewAndViewModels(builder.Services);
+        UseMauiExtensions(builder.Services);
 
         return builder.Build();
     }
@@ -28,6 +29,11 @@ public static class MauiProgram
     static void RegisterViewAndViewModels(in IServiceCollection services)
     {
         services.AddTransient<MainPage, MainPageViewModel>();
+    }
+
+    static void UseMauiExtensions(in IServiceCollection services)
+    {
+        services.AddSingleton<IAudioManager>(AudioManager.Current);
     }
 
 }
