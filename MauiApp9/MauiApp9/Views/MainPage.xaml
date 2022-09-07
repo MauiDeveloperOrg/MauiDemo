@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit ="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewmodels="using:MauiApp9.ViewModels"
+             xmlns:views="using:MauiApp9.Views"
+             xmlns:customcontrols="using:MauiApp9.CustomControls" 
+             x:Class="MauiApp9.Views.MainPage"
+             Title="MainPage">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <customcontrols:ProgressButton HorizontalOptions="Center" VerticalOptions="Center" Text="Loading" IsInProgressing="{Binding IsInProgress}" Padding="10">
+            <customcontrols:ProgressButton.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding TappedCommand}"/>
+            </customcontrols:ProgressButton.GestureRecognizers>
+        </customcontrols:ProgressButton>
+
+        <customcontrols:OutlinedEntry WidthRequest="200">
+            
+        </customcontrols:OutlinedEntry>
+
+
+    </Grid>
+    
+    
+</ContentPage>
