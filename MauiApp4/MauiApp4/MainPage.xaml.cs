@@ -1,4 +1,6 @@
-﻿namespace MauiApp4;
+﻿using System.Windows.Input;
+
+namespace MauiApp4;
 
 public partial class MainPage : ContentPage
 {
@@ -6,8 +8,12 @@ public partial class MainPage : ContentPage
 
 	public MainPage()
 	{
-		InitializeComponent();
-	}
+        ClickCommand = new Command<object>(t =>
+        {
+
+        });
+		InitializeComponent(); 
+    }
 
 	private void OnCounterClicked(object sender, EventArgs e)
 	{
@@ -20,5 +26,10 @@ public partial class MainPage : ContentPage
 
 		SemanticScreenReader.Announce(CounterBtn.Text);
 	}
+
+
+ 
+
+    public ICommand ClickCommand { get; }
 }
 

@@ -5,6 +5,7 @@
              xmlns:viewmodels="using:MauiApp9.ViewModels"
              xmlns:views="using:MauiApp9.Views" 
              x:Class="MauiApp9.Views.MainPage"
+             x:DataType="viewmodels:MainPageViewModel"
              Title="MainPage">
 
     <Grid>

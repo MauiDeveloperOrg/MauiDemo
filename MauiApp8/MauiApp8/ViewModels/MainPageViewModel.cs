@@ -27,7 +27,7 @@ public partial class MainPageViewModel : BasicViewModel
 
         TappedCommand = new Command<object>(t =>
         {
-            IsInProgress = !IsInProgress;
+            IsInProgress = !IsInProgress; 
         });
     }
 
