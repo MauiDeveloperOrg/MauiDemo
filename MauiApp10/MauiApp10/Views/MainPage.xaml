@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit ="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewmodels="using:MauiApp10.ViewModels"
+             xmlns:views="using:MauiApp10.Views" 
+             xmlns:models="using:MauiApp10.Models"
+             x:Class="MauiApp10.Views.MainPage"
+             x:DataType="viewmodels:MainPageViewModel"
+             Title="MainPage">
+
+    <Grid>
+        <CollectionView ItemsSource="{Binding Employees}" IsGrouped="True">
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="models:EmployeeGroup">
+                    <Label Text="{Binding Category}"/>
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+            <CollectionView.ItemTemplate >
+                <DataTemplate x:DataType="models:EmployeeModel">
+                    <Frame Padding="10" Margin="0,5">
+                        <Label Text="{Binding FullName}"/>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+    
+    
+</ContentPage>

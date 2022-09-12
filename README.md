@@ -17,12 +17,16 @@
 - MauiApp4: 这是一个设置相关的demo，
 1  你可以通过设置条件编译去根据不同的平台加载对应平台的nuget包
 2  你可以通过设置条件编译开启maui程序windows平台直接双击exe运行（unpack）
+3  你可以在前台直接绑定cs中的属性
     
 - MauiApp5: 这是一个使用CollectionView的例子，使用MVVM的方式
 
-
 - MauiApp6: 这是一个使用skiasharp 播放Lottie动画的demo
 
-- MauiAPp7: 这是一个使用skiasharp 播放Confetti动画的demo
+- MauiApp7: 这是一个使用skiasharp 播放Confetti动画的demo
 
+- MauiApp8: 这是一个自定义控件的demo，你可以创建outlineEntry and progressbutton
 
+- MauiApp9: 这是使用Plugin.Maui.Audio库播放音频的教程
+
+- MauiApp10: 这是使用CollectionViewd的例子，例子使用了分组以及分组折叠
