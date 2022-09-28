@@ -21,13 +21,13 @@
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
                             <Label Grid.Row="0" Text="{Binding Name}"/>
-                            <Label Grid.Row="1" Text="{Binding Number}"/>
-                            <CheckBox Grid.Row="2" BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:MainPage}}, Path=BindingContext}">
+                            <Label Grid.Row="1" Text="{Binding Number}"  IsVisible="{Binding IsShow}"/>
+                            <CheckBox Grid.Row="2" IsVisible="{Binding IsShow}" BindingContext="{Binding Source={RelativeSource AncestorType={x:Type views:MainPage}}, Path=BindingContext}">
                                 <CheckBox.Behaviors>
                                     <toolkit:EventToCommandBehavior EventName="CheckedChanged"  Command="{Binding CheckedCommand}"/>
                                 </CheckBox.Behaviors>

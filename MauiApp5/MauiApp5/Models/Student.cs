@@ -9,4 +9,6 @@ public partial class Student : BasicModel
     [ObservableProperty]
     int _Number = 0;
 
+    [ObservableProperty]
+    bool _IsShow = false;
 }

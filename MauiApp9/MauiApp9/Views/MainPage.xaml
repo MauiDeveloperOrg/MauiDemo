@@ -17,7 +17,7 @@
 
         <Button Text="播放音乐" Command="{Binding ClickCommand}"/>
 
-
+        <TimePicker Grid.Row="1" />
     </Grid>
     
     

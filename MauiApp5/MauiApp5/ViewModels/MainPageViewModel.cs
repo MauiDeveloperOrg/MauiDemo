@@ -16,7 +16,11 @@ public partial class MainPageViewModel : BasicViewModel
             {
                 Name = $"张三{i + 1}",
                 Number = i + 1,
+                
             };
+
+            if (i == 3 || i == 7)
+                student.IsShow = true;
 
             Students.Add(student);
         }
