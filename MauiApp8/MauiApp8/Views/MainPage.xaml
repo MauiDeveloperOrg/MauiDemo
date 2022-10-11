@@ -10,7 +10,8 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <customcontrols:ProgressButton HorizontalOptions="Center" VerticalOptions="Center" Text="Loading" IsInProgressing="{Binding IsInProgress}" Padding="10">
@@ -23,6 +24,35 @@
             
         </customcontrols:OutlinedEntry>
 
+        <Grid Grid.Row="2" RowDefinitions="60,*">
+            <HorizontalStackLayout Margin="10" Grid.Row="0">
+                <Label HorizontalTextAlignment="Start"
+                       VerticalTextAlignment="Center"
+                       Margin="20,0,0,0" 
+                       Text="AAA" />
+                <RadioButton Content="123"
+                             Margin="20,0,0,0"
+                             FontSize="20"
+                             VerticalOptions="Center"
+                             IsChecked="{Binding IsGsn}"
+                             GroupName="action" />
+                <RadioButton Content="231"
+                             Margin="60,0,0,0"
+                             FontSize="20"
+                             VerticalOptions="Center"
+                             IsChecked="{Binding IsUser}"
+                             GroupName="action" />
+            </HorizontalStackLayout>
+
+            <StackLayout Background="Black"
+                         Grid.Row="1"
+                         IsVisible="{Binding IsGsn}" />
+            <StackLayout Background="Red"
+                         Grid.Row="1"
+                         IsVisible="{Binding IsUser}" />
+
+        </Grid>
+        
 
     </Grid>
     

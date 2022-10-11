@@ -40,4 +40,10 @@ public partial class MainPageViewModel : BasicViewModel
     [ObservableProperty]
     public bool _IsInProgress;
 
+    [ObservableProperty]
+    public bool _IsGsn;
+
+    [ObservableProperty]
+    public bool _IsUser;
+
 }
