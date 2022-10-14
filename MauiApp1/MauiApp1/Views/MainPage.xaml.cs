@@ -26,6 +26,18 @@ public partial class MainPage : ContentPage
             return;
 
         var windowHanlde = winuiWindow.GetWindowHandle();
+        //winuiWindow.ExtendsContentIntoTitleBar = false;
+        //_ = SetWindowPos(windowHanlde, SpecialWindowHandles.HWND_TOP,
+        //                    0, 0, 800, 600,
+        //                    SetWindowPosFlags.SWP_NOMOVE);
+
+        //_ = SetWindowLong(windowHanlde,
+        //   WindowLongIndexFlags.GWL_STYLE,
+        //   (SetWindowLongFlags)(GetWindowLong(windowHanlde,
+        //      WindowLongIndexFlags.GWL_STYLE) &
+        //      ~(int)SetWindowLongFlags.WS_MINIMIZEBOX &
+        //      ~(int)SetWindowLongFlags.WS_MAXIMIZEBOX));
+
         User32.PostMessage(windowHanlde, WindowMessage.WM_SYSCOMMAND, new IntPtr((int)SysCommands.SC_MAXIMIZE), IntPtr.Zero);
 #endif
     }
