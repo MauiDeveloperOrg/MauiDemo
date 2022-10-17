@@ -8,6 +8,21 @@
     </ResourceDictionary.MergedDictionaries>
 
     <x:Boolean x:Key="MauiDesignControlIn">true</x:Boolean>
- 
+
+    <Grid x:Name="AppTitleBar" Height="48"> 
+        <TextBlock x:Name="AppTitleTextBlock" Text="App title"
+                       TextWrapping="NoWrap" 
+                       VerticalAlignment="Top"
+                       Margin="28,0,0,0"/>
+    </Grid>
+
+    <DataTemplate x:Key="AppTitleBarCustome">
+        <Grid Height="48">
+            <TextBlock Text="App Title Bar Custome" TextWrapping="NoWrap" 
+                       VerticalAlignment="Center" Foreground="White"
+                       Margin="400,0,0,0"></TextBlock>
+        </Grid>
+        
+    </DataTemplate>
 
 </ResourceDictionary>
