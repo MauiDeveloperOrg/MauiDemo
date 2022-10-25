@@ -26,6 +26,13 @@ public partial class MainPage : ContentPage
             return;
 
         var windowHanlde = winuiWindow.GetWindowHandle();
+
+        //var appWindow = winuiWindow.GetAppWindow();
+        //if (appWindow is null)
+            //return;
+        //Windows.Graphics.RectInt32[] dragRects = dragRectsList.ToArray();
+        //appWindow.TitleBar.SetDragRectangles()
+
         //winuiWindow.ExtendsContentIntoTitleBar = false;
         //_ = SetWindowPos(windowHanlde, SpecialWindowHandles.HWND_TOP,
         //                    0, 0, 800, 600,

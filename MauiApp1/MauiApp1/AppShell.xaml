@@ -6,6 +6,12 @@
     xmlns:view="clr-namespace:MauiApp1.Views"
     Shell.FlyoutBehavior="Disabled">
 
+    <Shell.TitleView>
+        <Grid>
+            <Image Source="dotnet_bot.png" HeightRequest="30" WidthRequest="30"/>
+        </Grid>
+    </Shell.TitleView>
+    
     <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate view:MainPage}"
