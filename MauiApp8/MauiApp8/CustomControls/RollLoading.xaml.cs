@@ -12,38 +12,82 @@ public partial class RollLoading : Grid
 
     private void RollLoading_Loaded(object? sender, EventArgs e)
     {
-        //PART_Roll1.RotateTo(360, 2000);
-        //PART_Roll2.RotateTo(360, 2000);
-        //PART_Roll3.RotateTo(360, 2000);
-        //PART_Roll4.RotateTo(360, 2000);
-        //PART_Roll5.RotateTo(360, 2000);
-        //PART_Roll6.RotateTo(360, 2000);
-        //PART_Roll7.RotateTo(360, 2000);
-        //PART_Roll8.RotateTo(360, 2000);
+        {
+            var animation = new Animation();
+            var animation1 = new Animation(angle => PART_Roll1.Rotation = angle, 0, 360);
+            animation.Insert(0, 1, animation1);
+            var animation2 = new Animation(angle => PART_Roll2.Rotation = angle, 0, 540);
+            animation.Insert(0, 1, animation2);
+            var animation3 = new Animation(angle => PART_Roll3.Rotation = angle, 0, 720);
+            animation.Insert(0, 1, animation3);
+            var animation4 = new Animation(angle => PART_Roll4.Rotation = angle, 0, 900);
+            animation.Insert(0, 1, animation4);
+            var animation5 = new Animation(angle => PART_Roll5.Rotation = angle, 0, 1080);
+            animation.Insert(0, 1, animation5);
+            var animation6 = new Animation(angle => PART_Roll6.Rotation = angle, 0, 1260);
+            animation.Insert(0, 1, animation6);
+            var animation7 = new Animation(angle => PART_Roll7.Rotation = angle, 0, 1440);
+            animation.Insert(0, 1, animation7);
+            var animation8 = new Animation(angle => PART_Roll8.Rotation = angle, 0, 1620);
+            animation.Insert(0, 1, animation8);
 
-        var animation1 = new Animation(angle => PART_Roll1.Rotation = angle, 0, 360);
-        var animation2 = new Animation(angle => PART_Roll2.Rotation = angle, 0, 360);
-        var animation3 = new Animation(angle => PART_Roll3.Rotation = angle, 0, 360);
-        var animation4 = new Animation(angle => PART_Roll4.Rotation = angle, 0, 360);
-        var animation5 = new Animation(angle => PART_Roll5.Rotation = angle, 0, 360);
-        var animation6 = new Animation(angle => PART_Roll6.Rotation = angle, 0, 360);
-        var animation7 = new Animation(angle => PART_Roll7.Rotation = angle, 0, 360);
-        var animation8 = new Animation(angle => PART_Roll8.Rotation = angle, 0, 360);
+            animation.Commit(this, "RollRotate", 16, 1600, EasingX.Linear, default, () => true);
 
-        animation1.Commit(PART_Roll1, "Rotate", 16, 1600, EasingX.Linear, (angle, finished) => PART_Roll1.Rotation = 360, () => true);
-        animation2.Commit(PART_Roll2, "Rotate", 16, 1400, EasingX.Linear, (angle, finished) => PART_Roll1.Rotation = 360, () => true);
-        animation3.Commit(PART_Roll3, "Rotate", 16, 1200, EasingX.Linear, (angle, finished) => PART_Roll1.Rotation = 360, () => true);
-        animation4.Commit(PART_Roll4, "Rotate", 16, 1000, EasingX.Linear, (angle, finished) => PART_Roll1.Rotation = 360, () => true);
-        animation5.Commit(PART_Roll5, "Rotate", 16, 800, EasingX.Linear, (angle, finished) => PART_Roll1.Rotation = 360, () => true);
-        animation6.Commit(PART_Roll6, "Rotate", 16, 600, EasingX.Linear, (angle, finished) => PART_Roll1.Rotation = 360, () => true);
-        animation7.Commit(PART_Roll7, "Rotate", 16, 400, EasingX.Linear, (angle, finished) => PART_Roll1.Rotation = 360, () => true);
-        animation8.Commit(PART_Roll8, "Rotate", 16, 200, EasingX.Linear, (angle, finished) => PART_Roll1.Rotation = 360, () => true);
+            //this.CancelAnimations();
+        }
 
+        {
+            var animation = new Animation();
+            var animation1 = new Animation(angle => 
+            {
+                RollColor = Colors.Red;
+            }, 0, 1);
+            animation.Insert(0, 0.2, animation1);
+            var animation2 = new Animation(angle => 
+            {
+                RollColor = Colors.Blue;
+            }, 0, 1);
+            animation.Insert(0.2, 0.4, animation2);
+            var animation3 = new Animation(angle => 
+            {
+                RollColor = Colors.Purple;
+            }, 0, 1);
+            animation.Insert(0.4, 0.6, animation3);
+            var animation4 = new Animation(angle => 
+            {
+                RollColor = Colors.Pink;
+            }, 0, 1);
+            animation.Insert(0.6, 0.8, animation4);
+            var animation5 = new Animation(angle => 
+            {
+                RollColor = Colors.Green;
+            }, 0, 1);
+            animation.Insert(0.8, 1, animation5);
+            animation.Commit(this, "ColorChange", 16, 1600, EasingX.Linear, default, () => true);
+
+        } 
     }
 
+    public static readonly BindableProperty RollColorProperty = BindableProperty.Create(
+           propertyName: nameof(RollColor),
+           returnType: typeof(Color),
+           declaringType: typeof(RollLoading),
+           defaultValue: Colors.Red,
+           defaultBindingMode: BindingMode.TwoWay,
+           propertyChanged: RollColorPropertyChanged);
 
 
 
+    public Color RollColor
+    {
+        get => (Color)GetValue(RollColorProperty);
+        set => SetValue(RollColorProperty, value);
+    }
+
+    private static void RollColorPropertyChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+         
+    }
     protected override void OnHandlerChanged()
     {
         base.OnHandlerChanged();

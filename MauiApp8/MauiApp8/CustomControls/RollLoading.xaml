@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Grid xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       x:Class="MauiApp8.CustomControls.RollLoading">
+       x:Class="MauiApp8.CustomControls.RollLoading"
+       x:Name="this">
 
     <Border x:Name="PART_Roll1" WidthRequest="160" HeightRequest="160"  StrokeLineCap="Round" StrokeLineJoin="Round" StrokeMiterLimit="2" StrokeThickness="2" StrokeShape="RoundRectangle 100,100,100,100">
         <Border.Stroke>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="Red" Offset="0.5" />
+                <GradientStop Color="{Binding Source={x:Reference this}, Path=RollColor}" Offset="0.5" />
                 <GradientStop Color="Transparent" Offset="0.5" />
             </LinearGradientBrush>
         </Border.Stroke>
@@ -15,7 +16,7 @@
     <Border x:Name="PART_Roll2" WidthRequest="140" HeightRequest="140"  StrokeThickness="2" StrokeShape="RoundRectangle 100,100,100,100">
         <Border.Stroke>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="Red" Offset="0.5" />
+                <GradientStop Color="{Binding Source={x:Reference this}, Path=RollColor}" Offset="0.5" />
                 <GradientStop Color="Transparent" Offset="0.5" />
             </LinearGradientBrush>
         </Border.Stroke>
@@ -24,7 +25,7 @@
     <Border x:Name="PART_Roll3" WidthRequest="120" HeightRequest="120"  StrokeThickness="2" StrokeShape="RoundRectangle 100,100,100,100">
         <Border.Stroke>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="Red" Offset="0.5" />
+                <GradientStop Color="{Binding Source={x:Reference this}, Path=RollColor}" Offset="0.5" />
                 <GradientStop Color="Transparent" Offset="0.5" />
             </LinearGradientBrush>
         </Border.Stroke>
@@ -33,7 +34,7 @@
     <Border x:Name="PART_Roll4" WidthRequest="100" HeightRequest="100"  StrokeThickness="2" StrokeShape="RoundRectangle 100,100,100,100">
         <Border.Stroke>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="Red" Offset="0.5" />
+                <GradientStop Color="{Binding Source={x:Reference this}, Path=RollColor}" Offset="0.5" />
                 <GradientStop Color="Transparent" Offset="0.5" />
             </LinearGradientBrush>
         </Border.Stroke>
@@ -42,7 +43,7 @@
     <Border x:Name="PART_Roll5" WidthRequest="80" HeightRequest="80"  StrokeThickness="2" StrokeShape="RoundRectangle 100,100,100,100">
         <Border.Stroke>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="Red" Offset="0.5" />
+                <GradientStop Color="{Binding Source={x:Reference this}, Path=RollColor}" Offset="0.5" />
                 <GradientStop Color="Transparent" Offset="0.5" />
             </LinearGradientBrush>
         </Border.Stroke>
@@ -51,7 +52,7 @@
     <Border x:Name="PART_Roll6" WidthRequest="60" HeightRequest="60"  StrokeThickness="2" StrokeShape="RoundRectangle 100,100,100,100">
         <Border.Stroke>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="Red" Offset="0.5" />
+                <GradientStop Color="{Binding Source={x:Reference this}, Path=RollColor}" Offset="0.5" />
                 <GradientStop Color="Transparent" Offset="0.5" />
             </LinearGradientBrush>
         </Border.Stroke>
@@ -60,7 +61,7 @@
     <Border x:Name="PART_Roll7" WidthRequest="40" HeightRequest="40"  StrokeThickness="2" StrokeShape="RoundRectangle 100,100,100,100">
         <Border.Stroke>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="Red" Offset="0.5" />
+                <GradientStop Color="{Binding Source={x:Reference this}, Path=RollColor}" Offset="0.5" />
                 <GradientStop Color="Transparent" Offset="0.5" />
             </LinearGradientBrush>
         </Border.Stroke>
@@ -69,10 +70,12 @@
     <Border x:Name="PART_Roll8" WidthRequest="20" HeightRequest="20"  StrokeThickness="2" StrokeShape="RoundRectangle 100,100,100,100">
         <Border.Stroke>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="Red" Offset="0.5" />
+                <GradientStop Color="{Binding Source={x:Reference this}, Path=RollColor}" Offset="0.5" />
                 <GradientStop Color="Transparent" Offset="0.5" />
             </LinearGradientBrush>
         </Border.Stroke>
     </Border>
+
+    <Border Background="{Binding Source={x:Reference this}, Path=RollColor}" WidthRequest="10" HeightRequest="10"/>
 
 </Grid>
