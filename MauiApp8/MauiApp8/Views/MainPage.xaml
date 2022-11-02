@@ -12,6 +12,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <customcontrols:ProgressButton HorizontalOptions="Center" VerticalOptions="Center" Text="Loading" IsInProgressing="{Binding IsInProgress}" Padding="10">
@@ -20,11 +21,15 @@
             </customcontrols:ProgressButton.GestureRecognizers>
         </customcontrols:ProgressButton>
 
-        <customcontrols:OutlinedEntry WidthRequest="200">
+        <customcontrols:OutlinedEntry Grid.Row="1" WidthRequest="200">
             
         </customcontrols:OutlinedEntry>
 
-        <Grid Grid.Row="2" RowDefinitions="60,*">
+        <customcontrols:RollLoading Grid.Row="2" >
+            
+        </customcontrols:RollLoading>
+
+        <Grid Grid.Row="3" RowDefinitions="60,*">
             <HorizontalStackLayout Margin="10" Grid.Row="0">
                 <Label HorizontalTextAlignment="Start"
                        VerticalTextAlignment="Center"
