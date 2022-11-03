@@ -4,11 +4,11 @@ namespace MauiApp8.CustomControls;
 
 public partial class RollLoading : Grid
 {
-	public RollLoading()
-	{
-		InitializeComponent();
+    public RollLoading()
+    {
+        InitializeComponent();
         Loaded += RollLoading_Loaded;
-	}
+    }
 
     private void RollLoading_Loaded(object? sender, EventArgs e)
     {
@@ -38,34 +38,74 @@ public partial class RollLoading : Grid
 
         {
             var animation = new Animation();
-            var animation1 = new Animation(angle => 
+            var animation1 = new Animation(angle =>
             {
-                RollColor = Colors.Red;
+                RollBrush = new LinearGradientBrush(new()
+                {
+                    new GradientStop{Color = Colors.Red , Offset = 0.5f},
+                    new GradientStop{Color = Colors.Transparent, Offset = 0.5f},
+                })
+                {
+                    StartPoint = new Point(0, 0),
+                    EndPoint = new Point(1, 1),
+                };
             }, 0, 1);
             animation.Insert(0, 0.2, animation1);
-            var animation2 = new Animation(angle => 
+            var animation2 = new Animation(angle =>
             {
-                RollColor = Colors.Blue;
+                RollBrush = new LinearGradientBrush(new()
+                {
+                    new GradientStop{Color = Colors.Blue , Offset = 0.5f},
+                    new GradientStop{Color = Colors.Transparent, Offset = 0.5f},
+                })
+                {
+                    StartPoint = new Point(0, 0),
+                    EndPoint = new Point(1, 1),
+                };
             }, 0, 1);
             animation.Insert(0.2, 0.4, animation2);
-            var animation3 = new Animation(angle => 
+            var animation3 = new Animation(angle =>
             {
-                RollColor = Colors.Purple;
+                RollBrush = new LinearGradientBrush(new()
+                {
+                    new GradientStop{Color = Colors.Purple , Offset = 0.5f},
+                    new GradientStop{Color = Colors.Transparent, Offset = 0.5f},
+                })
+                {
+                    StartPoint = new Point(0, 0),
+                    EndPoint = new Point(1, 1),
+                };
             }, 0, 1);
             animation.Insert(0.4, 0.6, animation3);
-            var animation4 = new Animation(angle => 
+            var animation4 = new Animation(angle =>
             {
-                RollColor = Colors.Pink;
+                RollBrush = new LinearGradientBrush(new()
+                {
+                    new GradientStop{Color = Colors.Pink , Offset = 0.5f},
+                    new GradientStop{Color = Colors.Transparent, Offset = 0.5f},
+                })
+                {
+                    StartPoint = new Point(0, 0),
+                    EndPoint = new Point(1, 1),
+                };
             }, 0, 1);
             animation.Insert(0.6, 0.8, animation4);
-            var animation5 = new Animation(angle => 
+            var animation5 = new Animation(angle =>
             {
-                RollColor = Colors.Green;
+                RollBrush = new LinearGradientBrush(new()
+                {
+                    new GradientStop{Color = Colors.Green , Offset = 0.5f},
+                    new GradientStop{Color = Colors.Transparent, Offset = 0.5f},
+                })
+                {
+                    StartPoint = new Point(0, 0),
+                    EndPoint = new Point(1, 1),
+                };
             }, 0, 1);
             animation.Insert(0.8, 1, animation5);
             animation.Commit(this, "ColorChange", 16, 1600, EasingX.Linear, default, () => true);
 
-        } 
+        }
     }
 
     public static readonly BindableProperty RollColorProperty = BindableProperty.Create(
@@ -84,9 +124,35 @@ public partial class RollLoading : Grid
         set => SetValue(RollColorProperty, value);
     }
 
+
+    public static readonly BindableProperty RollBrushProperty = BindableProperty.Create(
+           propertyName: nameof(RollBrush),
+           returnType: typeof(Brush),
+           declaringType: typeof(RollLoading),
+           defaultValue: new LinearGradientBrush(new()
+           {
+               new GradientStop{Color = Colors.Red , Offset = 0.5f},
+               new GradientStop{Color = Colors.Transparent, Offset = 0.5f},
+           })
+           {
+               StartPoint = new Point(0, 0),
+               EndPoint = new Point(1, 1),
+           },
+           defaultBindingMode: BindingMode.TwoWay,
+           propertyChanged: RollColorPropertyChanged);
+
+
+
+    public Brush RollBrush
+    {
+        get => (Brush)GetValue(RollBrushProperty);
+        set => SetValue(RollBrushProperty, value);
+    }
+
+
     private static void RollColorPropertyChanged(BindableObject bindable, object oldValue, object newValue)
     {
-         
+
     }
     protected override void OnHandlerChanged()
     {
@@ -98,7 +164,7 @@ public partial class RollLoading : Grid
 
     }
 
-   
+
 
 
 }
