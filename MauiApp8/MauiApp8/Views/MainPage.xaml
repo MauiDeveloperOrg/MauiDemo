@@ -25,7 +25,7 @@
             
         </customcontrols:OutlinedEntry>
 
-        <customcontrols:RollLoading Grid.Row="2" >
+        <customcontrols:RollLoading Grid.Row="2">
             
         </customcontrols:RollLoading>
 
