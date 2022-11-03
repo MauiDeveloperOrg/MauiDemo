@@ -1,10 +1,11 @@
 namespace MauiApp8.CustomControls;
 
-public partial class ProgressButton : Frame
+public partial class ProgressButton : TemplatedView
 {
     public ProgressButton()
     {
         InitializeComponent();
+        BackgroundColor = Colors.Transparent;
     }
 
     public static readonly BindableProperty TextProperty = BindableProperty.Create(

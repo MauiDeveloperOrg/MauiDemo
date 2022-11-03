@@ -3,11 +3,60 @@ using System.Runtime.CompilerServices;
 
 namespace MauiApp8.CustomControls;
 
-public partial class RollLoading : Grid
+public partial class RollLoading : TemplatedView
 {
     public RollLoading()
     {
         InitializeComponent();
+
+        var templateObject = GetTemplateChild(nameof(PART_Roll1));
+        if (templateObject is Border border1)
+            PART_Roll1 = border1;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Roll1));
+
+        templateObject = GetTemplateChild(nameof(PART_Roll2));
+        if (templateObject is Border border2)
+            PART_Roll2 = border2;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Roll2));
+
+        templateObject = GetTemplateChild(nameof(PART_Roll3));
+        if (templateObject is Border border3)
+            PART_Roll3 = border3;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Roll3));
+
+        templateObject = GetTemplateChild(nameof(PART_Roll4));
+        if (templateObject is Border border4)
+            PART_Roll4 = border4;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Roll4));
+
+        templateObject = GetTemplateChild(nameof(PART_Roll5));
+        if (templateObject is Border border5)
+            PART_Roll5 = border5;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Roll5));
+
+        templateObject = GetTemplateChild(nameof(PART_Roll6));
+        if (templateObject is Border border6)
+            PART_Roll6 = border6;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Roll6));
+
+        templateObject = GetTemplateChild(nameof(PART_Roll7));
+        if (templateObject is Border border7)
+            PART_Roll7 = border7;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Roll7));
+
+        templateObject = GetTemplateChild(nameof(PART_Roll8));
+        if (templateObject is Border border8)
+            PART_Roll8 = border8;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Roll8));
+
         Loaded += RollLoading_Loaded;
         SizeChanged += RollLoading_SizeChanged;
     }
@@ -33,6 +82,16 @@ public partial class RollLoading : Grid
                                                              declaringType: typeof(RollLoading),
                                                              defaultValue: false,
                                                              defaultBindingMode: BindingMode.TwoWay);
+
+    readonly Border PART_Roll1 = default!;
+    readonly Border PART_Roll2 = default!;
+    readonly Border PART_Roll3 = default!;
+    readonly Border PART_Roll4 = default!;
+    readonly Border PART_Roll5 = default!;
+    readonly Border PART_Roll6 = default!;
+    readonly Border PART_Roll7 = default!;
+    readonly Border PART_Roll8 = default!;
+
 
     List<Animation> Animations { get; } = new();
 

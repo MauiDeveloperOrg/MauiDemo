@@ -1,19 +1,39 @@
 namespace MauiApp8.CustomControls;
 
-public partial class OutlinedEntry : Grid
+public partial class OutlinedEntry : TemplatedView
 {
 	public OutlinedEntry()
 	{
 		InitializeComponent();
-	}
+        var templateObject = GetTemplateChild(nameof(PART_lblPlaceholder));
+        if (templateObject is Label label)
+            PART_lblPlaceholder = label;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_lblPlaceholder));
+
+        templateObject = GetTemplateChild(nameof(PART_faeBorder));
+        if (templateObject is Frame frame)
+            PART_faeBorder = frame;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_faeBorder));
+    }
 
     public static readonly BindableProperty TextProperty = BindableProperty.Create(
-          propertyName: nameof(Text),
-          returnType: typeof(string),
-          declaringType: typeof(ProgressButton),
-          defaultValue: "",
-          defaultBindingMode: BindingMode.TwoWay,
-          propertyChanged: TextPropertyChanged);
+                                                           propertyName: nameof(Text),
+                                                           returnType: typeof(string),
+                                                           declaringType: typeof(ProgressButton),
+                                                           defaultValue: "",
+                                                           defaultBindingMode: BindingMode.TwoWay);
+
+    public static readonly BindableProperty PlaceholderProperty = BindableProperty.Create(
+                                                                  propertyName: nameof(Placeholder),
+                                                                  returnType: typeof(string),
+                                                                  declaringType: typeof(ProgressButton),
+                                                                  defaultValue: "",
+                                                                  defaultBindingMode: BindingMode.TwoWay);
+
+    readonly Label PART_lblPlaceholder = default!;
+    readonly Frame PART_faeBorder = default!;
 
     public string Text
     {
@@ -21,39 +41,19 @@ public partial class OutlinedEntry : Grid
         set => SetValue(TextProperty, value);
     }
 
-    public static readonly BindableProperty PlaceholderProperty = BindableProperty.Create(
-      propertyName: nameof(Placeholder),
-      returnType: typeof(string),
-      declaringType: typeof(ProgressButton),
-      defaultValue: "",
-      defaultBindingMode: BindingMode.TwoWay,
-      propertyChanged: PlaceholderPropertyChanged);
-
-
     public string Placeholder
     {
         get => (string)GetValue(PlaceholderProperty);
         set => SetValue(PlaceholderProperty, value);
     }
 
-
-    private static void TextPropertyChanged(BindableObject bindable, object oldValue, object newValue)
-    {
-         
-    }
-
-    private static void PlaceholderPropertyChanged(BindableObject bindable, object oldValue, object newValue)
-    {
-         
-    }
-
     private void Entry_Focused(object sender, FocusEventArgs e)
     {
-        lblPlaceholder.FontSize = 11;
-        lblPlaceholder.TranslateTo(0, -26, 80, Easing.Linear);
-        lblPlaceholder.BackgroundColor = Colors.White;
-        lblPlaceholder.ZIndex = 1;
-        faeBorder.ZIndex = 0;
+        PART_lblPlaceholder.FontSize = 11;
+        PART_lblPlaceholder.TranslateTo(0, -26, 80, Easing.Linear);
+        PART_lblPlaceholder.BackgroundColor = Colors.White;
+        PART_lblPlaceholder.ZIndex = 1;
+        PART_faeBorder.ZIndex = 0;
     }
 
     private void Entry_Unfocused(object sender, FocusEventArgs e)
@@ -64,11 +64,11 @@ public partial class OutlinedEntry : Grid
         }
         else
         {
-            lblPlaceholder.FontSize = 15;
-            lblPlaceholder.TranslateTo(0, 0, 80, Easing.Linear);
-            lblPlaceholder.BackgroundColor = Colors.Transparent;
-            lblPlaceholder.ZIndex = 0;
-            faeBorder.ZIndex = 1;
+            PART_lblPlaceholder.FontSize = 15;
+            PART_lblPlaceholder.TranslateTo(0, 0, 80, Easing.Linear);
+            PART_lblPlaceholder.BackgroundColor = Colors.Transparent;
+            PART_lblPlaceholder.ZIndex = 0;
+            PART_faeBorder.ZIndex = 1;
         }
 
        

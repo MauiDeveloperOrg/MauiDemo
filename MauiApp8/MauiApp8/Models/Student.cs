@@ -9,4 +9,6 @@ public partial class Student : BasicModel
     [ObservableProperty]
     int _Number = 0;
 
+    [ObservableProperty]
+    Color? _Color = default;
 }

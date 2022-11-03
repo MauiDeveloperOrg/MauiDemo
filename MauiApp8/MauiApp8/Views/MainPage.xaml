@@ -5,67 +5,74 @@
              xmlns:viewmodels="using:MauiApp8.ViewModels"
              xmlns:views="using:MauiApp8.Views"
              xmlns:customcontrols="using:MauiApp8.CustomControls" 
+             xmlns:layouts="clr-namespace:MauiApp8.Layouts"
              x:Class="MauiApp8.Views.MainPage"
              Title="MainPage">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <customcontrols:ProgressButton HorizontalOptions="Center" VerticalOptions="Center" Text="Loading" IsInProgressing="{Binding IsInProgress}" Padding="10">
-            <customcontrols:ProgressButton.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding TappedCommand}"/>
-            </customcontrols:ProgressButton.GestureRecognizers>
-        </customcontrols:ProgressButton>
+    <ScrollView>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <customcontrols:ProgressButton HorizontalOptions="Center" VerticalOptions="Center" Text="Loading" IsInProgressing="{Binding IsInProgress}" Padding="10">
+                <customcontrols:ProgressButton.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding TappedCommand}"/>
+                </customcontrols:ProgressButton.GestureRecognizers>
+            </customcontrols:ProgressButton>
 
-        <customcontrols:OutlinedEntry Grid.Row="1" WidthRequest="200">
-            
-        </customcontrols:OutlinedEntry>
+            <customcontrols:OutlinedEntry Grid.Row="1" WidthRequest="200">
 
-        <customcontrols:RollLoading Grid.Row="2" Padding="0" HeightRequest="120" IsPlay="True">
+            </customcontrols:OutlinedEntry>
 
-        </customcontrols:RollLoading>
+            <customcontrols:RollLoading Grid.Row="2" Padding="0" HeightRequest="150" IsPlay="True"/>
 
-        <customcontrols:BallLoading Grid.Row="3" HeightRequest="200" Space="30" RunningSpace="10" IsPlay="True"/>
+            <customcontrols:BallLoading Grid.Row="3" HeightRequest="200" Space="30" RunningSpace="10" IsPlay="True"/>
 
-        <customcontrols:CarouselXView Grid.Row="4" Padding="20"/>
+            <customcontrols:CarouselXView Grid.Row="4" Padding="20" Background="Red" ItemsSource="{Binding Students}">
+                <customcontrols:CarouselXView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BackgroundColor="{Binding Color}" WidthRequest="100" HeightRequest="50">
+                            
+                        </Border>
+                    </DataTemplate>
+                </customcontrols:CarouselXView.ItemTemplate>
+            </customcontrols:CarouselXView>
 
-        <Grid Grid.Row="10" RowDefinitions="60,*">
-            <HorizontalStackLayout Margin="10" Grid.Row="0">
-                <Label HorizontalTextAlignment="Start"
+            <Grid Grid.Row="10" RowDefinitions="60,*">
+                <HorizontalStackLayout Margin="10" Grid.Row="0">
+                    <Label HorizontalTextAlignment="Start"
                        VerticalTextAlignment="Center"
                        Margin="20,0,0,0" 
                        Text="AAA" />
-                <RadioButton Content="123"
+                    <RadioButton Content="123"
                              Margin="20,0,0,0"
                              FontSize="20"
                              VerticalOptions="Center"
                              IsChecked="{Binding IsGsn}"
                              GroupName="action" />
-                <RadioButton Content="231"
+                    <RadioButton Content="231"
                              Margin="60,0,0,0"
                              FontSize="20"
                              VerticalOptions="Center"
                              IsChecked="{Binding IsUser}"
                              GroupName="action" />
-            </HorizontalStackLayout>
+                </HorizontalStackLayout>
 
-            <StackLayout Background="Black"
+                <StackLayout Background="Black"
                          Grid.Row="1"
                          IsVisible="{Binding IsGsn}" />
-            <StackLayout Background="Red"
+                <StackLayout Background="Red"
                          Grid.Row="1"
                          IsVisible="{Binding IsUser}" />
 
-        </Grid>
-        
+            </Grid>
+ 
 
-    </Grid>
-    
-    
+        </Grid>
+    </ScrollView>
 </ContentPage>

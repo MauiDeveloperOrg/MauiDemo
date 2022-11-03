@@ -1,51 +1,55 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<TemplatedView  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                  x:Class="MauiApp8.CustomControls.BallLoading"
-                 x:Name="this"  
-                 Padding="0"
-                 HeightRequest="200">
-    <AbsoluteLayout x:Name="PART_Container" Padding="0" Margin="0">
-        <Border x:Name="PART_Eillipse" StrokeThickness="0" StrokeShape="RoundRectangle 100,100,100,100">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#ff9303" Offset="0"/>
-                    <GradientStop Color="#ff8c09" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.Background>
-        </Border>
-        <Border x:Name="PART_Eillipse1" StrokeThickness="0" StrokeShape="RoundRectangle 100,100,100,100" IsVisible="True">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#ff781a" Offset="0"/>
-                    <GradientStop Color="#ff6a27" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.Background>
-        </Border>
-        <Border x:Name="PART_Eillipse2" StrokeThickness="0" StrokeShape="RoundRectangle 100,100,100,100" IsVisible="True">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#ff5539" Offset="0"/>
-                    <GradientStop Color="#ff4845" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.Background>
-        </Border>
-        <Border x:Name="PART_Eillipse3" StrokeThickness="0" StrokeShape="RoundRectangle 100,100,100,100" IsVisible="True">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#ff3357" Offset="0"/>
-                    <GradientStop Color="#ff2465" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.Background>
-        </Border>
-        <Border x:Name="PART_Eillipse4" StrokeThickness="0" StrokeShape="RoundRectangle 100,100,100,100" IsVisible="True">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#ff097c" Offset="0"/>
-                    <GradientStop Color="#ff0382" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.Background>
-        </Border>
-    </AbsoluteLayout>
+                 x:Name="this">
+
+    <TemplatedView.ControlTemplate>
+        <ControlTemplate>
+            <AbsoluteLayout x:Name="PART_Container" Padding="0" Margin="0">
+                <Border x:Name="PART_Eillipse" StrokeThickness="0" StrokeShape="RoundRectangle 100,100,100,100">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#ff9303" Offset="0"/>
+                            <GradientStop Color="#ff8c09" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+                <Border x:Name="PART_Eillipse1" StrokeThickness="0" StrokeShape="RoundRectangle 100,100,100,100" IsVisible="True">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#ff781a" Offset="0"/>
+                            <GradientStop Color="#ff6a27" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+                <Border x:Name="PART_Eillipse2" StrokeThickness="0" StrokeShape="RoundRectangle 100,100,100,100" IsVisible="True">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#ff5539" Offset="0"/>
+                            <GradientStop Color="#ff4845" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+                <Border x:Name="PART_Eillipse3" StrokeThickness="0" StrokeShape="RoundRectangle 100,100,100,100" IsVisible="True">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#ff3357" Offset="0"/>
+                            <GradientStop Color="#ff2465" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+                <Border x:Name="PART_Eillipse4" StrokeThickness="0" StrokeShape="RoundRectangle 100,100,100,100" IsVisible="True">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#ff097c" Offset="0"/>
+                            <GradientStop Color="#ff0382" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+            </AbsoluteLayout>
+        </ControlTemplate>
+    </TemplatedView.ControlTemplate>
+    
  
-</ContentView>
+</TemplatedView>

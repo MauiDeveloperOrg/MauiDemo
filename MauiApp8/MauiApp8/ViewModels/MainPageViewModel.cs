@@ -9,12 +9,15 @@ public partial class MainPageViewModel : BasicViewModel
 {
     public MainPageViewModel()
     {
+
+        var random = new Random();
         for (int i = 0; i < 10; i++)
         {
             var student = new Student
             {
                 Name = $"张三{i + 1}",
                 Number = i + 1,
+                Color = Color.FromInt(random.Next())
             };
 
             Students.Add(student);
