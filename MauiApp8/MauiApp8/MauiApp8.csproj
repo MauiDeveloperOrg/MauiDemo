@@ -54,6 +54,12 @@
 	</ItemGroup>
 		
 	<ItemGroup>
+	  <MauiXaml Update="CustomControls\BallLoading.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="CustomControls\CarouselXView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="CustomControls\OutlinedEntry.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

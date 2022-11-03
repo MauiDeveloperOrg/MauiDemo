@@ -13,6 +13,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <customcontrols:ProgressButton HorizontalOptions="Center" VerticalOptions="Center" Text="Loading" IsInProgressing="{Binding IsInProgress}" Padding="10">
@@ -25,11 +27,15 @@
             
         </customcontrols:OutlinedEntry>
 
-        <customcontrols:RollLoading Grid.Row="2">
-            
+        <customcontrols:RollLoading Grid.Row="2" Padding="0" HeightRequest="120" IsPlay="True">
+
         </customcontrols:RollLoading>
 
-        <Grid Grid.Row="3" RowDefinitions="60,*">
+        <customcontrols:BallLoading Grid.Row="3" HeightRequest="200" Space="30" RunningSpace="10" IsPlay="True"/>
+
+        <customcontrols:CarouselXView Grid.Row="4" Padding="20"/>
+
+        <Grid Grid.Row="10" RowDefinitions="60,*">
             <HorizontalStackLayout Margin="10" Grid.Row="0">
                 <Label HorizontalTextAlignment="Start"
                        VerticalTextAlignment="Center"
