@@ -70,7 +70,5 @@ public partial class OutlinedEntry : TemplatedView
             PART_lblPlaceholder.ZIndex = 0;
             PART_faeBorder.ZIndex = 1;
         }
-
-       
     }
 }

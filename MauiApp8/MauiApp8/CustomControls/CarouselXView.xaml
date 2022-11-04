@@ -6,10 +6,14 @@
 
     <TemplatedView.ControlTemplate>
         <ControlTemplate>
-            <AbsoluteLayout x:Name="PART_Container" Padding="0" Margin="0">
-                
- 
-            </AbsoluteLayout>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <AbsoluteLayout x:Name="PART_Container" Padding="0" Margin="0"/>
+                <HorizontalStackLayout x:Name="PART_Dock"/>
+            </Grid>
         </ControlTemplate>
     </TemplatedView.ControlTemplate>
     

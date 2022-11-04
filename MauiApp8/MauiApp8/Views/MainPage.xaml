@@ -25,18 +25,16 @@
                 </customcontrols:ProgressButton.GestureRecognizers>
             </customcontrols:ProgressButton>
 
-            <customcontrols:OutlinedEntry Grid.Row="1" WidthRequest="200">
-
-            </customcontrols:OutlinedEntry>
+            <customcontrols:OutlinedEntry Grid.Row="1" WidthRequest="200"/>
 
             <customcontrols:RollLoading Grid.Row="2" Padding="0" HeightRequest="150" IsPlay="True"/>
 
             <customcontrols:BallLoading Grid.Row="3" HeightRequest="200" Space="30" RunningSpace="10" IsPlay="True"/>
 
-            <customcontrols:CarouselXView Grid.Row="4" Padding="20" Background="Red" ItemsSource="{Binding Students}">
+            <customcontrols:CarouselXView Grid.Row="4" Padding="20" ItemsSource="{Binding Students}">
                 <customcontrols:CarouselXView.ItemTemplate>
                     <DataTemplate>
-                        <Border BackgroundColor="{Binding Color}" WidthRequest="100" HeightRequest="50">
+                        <Border BackgroundColor="{Binding Color}">
                             
                         </Border>
                     </DataTemplate>
