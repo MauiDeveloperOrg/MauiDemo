@@ -9,7 +9,7 @@
              x:Class="MauiApp8.Views.MainPage"
              Title="MainPage">
 
-    <ScrollView>
+    <!--<ScrollView>-->
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -27,14 +27,16 @@
 
             <customcontrols:OutlinedEntry Grid.Row="1" WidthRequest="200"/>
 
+            <!--<Entry  Grid.Row="1"  Focused="Entry_Focused"/>-->
+
             <customcontrols:RollLoading Grid.Row="2" Padding="0" HeightRequest="150" IsPlay="True"/>
 
             <customcontrols:BallLoading Grid.Row="3" HeightRequest="200" Space="30" RunningSpace="10" IsPlay="True"/>
 
-            <customcontrols:CarouselXView Grid.Row="4" Padding="20" ItemsSource="{Binding Students}">
+            <customcontrols:CarouselXView Grid.Row="4" ItemsSource="{Binding Students}" BackgroundColor="Transparent">
                 <customcontrols:CarouselXView.ItemTemplate>
                     <DataTemplate>
-                        <Border BackgroundColor="{Binding Color}">
+                        <Border BackgroundColor="{Binding Color}" StrokeThickness="0">
                             
                         </Border>
                     </DataTemplate>
@@ -70,7 +72,8 @@
 
             </Grid>
  
+            
 
         </Grid>
-    </ScrollView>
+    <!--</ScrollView>-->
 </ContentPage>

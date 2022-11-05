@@ -17,17 +17,17 @@ public partial class MainPageViewModel : BasicViewModel
             {
                 Name = $"张三{i + 1}",
                 Number = i + 1,
-                //Color = Color.FromInt(random.Next())
+                Color = Color.FromRgb(random.Next(255), random.Next(255), random.Next(255)),
             };
 
-            if (i == 0)
-                student.Color = Colors.Red;
-            else if(i == 1)
-                student.Color = Colors.Blue;
-            else if(i == 2)
-                student.Color = Colors.Green;
-            else
-                student.Color = Colors.Yellow;
+            //if (i == 0)
+            //    student.Color = Colors.Red;
+            //else if(i == 1)
+            //    student.Color = Colors.Blue;
+            //else if(i == 2)
+            //    student.Color = Colors.Green;
+            //else
+            //    student.Color = Colors.Yellow;
 
             Students.Add(student);
         }

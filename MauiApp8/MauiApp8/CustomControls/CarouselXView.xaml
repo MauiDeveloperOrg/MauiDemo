@@ -6,13 +6,30 @@
 
     <TemplatedView.ControlTemplate>
         <ControlTemplate>
-            <Grid>
+            <Grid Padding="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <AbsoluteLayout x:Name="PART_Container" Padding="0" Margin="0"/>
-                <HorizontalStackLayout x:Name="PART_Dock"/>
+                <AbsoluteLayout x:Name="PART_Container" Padding="0" Margin="0">
+                    <AbsoluteLayout.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="2" Command="{Binding Source={x:Reference this}, Path=TapCommand}" CommandParameter="2"/>
+                        <PanGestureRecognizer PanUpdated="PanGestureRecognizer_PanUpdated"/>
+                        <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_Swiped"/>
+                        <SwipeGestureRecognizer Direction="Right" Swiped="SwipeGestureRecognizer_Swiped"/>
+                    </AbsoluteLayout.GestureRecognizers>
+                </AbsoluteLayout>
+                <Button Text="&lt;" HorizontalOptions="Start" CornerRadius="0" WidthRequest="50" HeightRequest="100" BackgroundColor="#30000000" />
+                <Button Text="&gt;" HorizontalOptions="End" CornerRadius="0" WidthRequest="50" HeightRequest="100" BackgroundColor="#30000000"/>
+                <HorizontalStackLayout x:Name="PART_Dock" Grid.Row="1" MinimumHeightRequest="20" HorizontalOptions="Center"
+                                       Spacing="5" Margin="0" Padding="0" IsVisible="True" 
+                                       BindableLayout.ItemsSource="{Binding Source={x:Reference this}, Path=ItemsSource}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Button HeightRequest="10" WidthRequest="20" CornerRadius="5" Padding="0" Margin="0" Command="{Binding Source={x:Reference this}, Path=SelectedCommand}" CommandParameter="{Binding}"/>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </HorizontalStackLayout>
             </Grid>
         </ControlTemplate>
     </TemplatedView.ControlTemplate>

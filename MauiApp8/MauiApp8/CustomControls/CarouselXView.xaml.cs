@@ -1,15 +1,40 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using TimerX = System.Timers.Timer;
 
 namespace MauiApp8.CustomControls;
 
 internal enum DockAlignment
 {
-    Start = 0,
-    Center = 1,
-    End = 2,
+    Default = 0,
+    Start = 1,
+    Center = 2,
+    End = 3,
+}
+
+file class SynchronizeInvoke : ISynchronizeInvoke
+{
+    bool _invokeRequired = false;
+    bool ISynchronizeInvoke.InvokeRequired => Volatile.Read(ref _invokeRequired);
+
+    IAsyncResult ISynchronizeInvoke.BeginInvoke(Delegate method, object?[]? args)
+    {
+        throw new NotImplementedException();
+    }
+
+    object? ISynchronizeInvoke.EndInvoke(IAsyncResult result)
+    {
+        throw new NotImplementedException();
+    }
+
+    object? ISynchronizeInvoke.Invoke(Delegate method, object?[]? args)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 public partial class CarouselXView : TemplatedView
@@ -68,6 +93,14 @@ public partial class CarouselXView : TemplatedView
                                                            defaultValue: false,
                                                            defaultBindingMode: BindingMode.TwoWay);
 
+    public static readonly BindableProperty IntervalProperty = BindableProperty.Create(
+                                                               propertyName: nameof(Interval),
+                                                               returnType: typeof(double),
+                                                               declaringType: typeof(CarouselXView),
+                                                               defaultValue: 400d,
+                                                               defaultBindingMode: BindingMode.TwoWay,
+                                                               propertyChanged: OnIntervalPropertyChanged);
+
     public IEnumerable ItemsSource
     {
         get => (IEnumerable)GetValue(ItemsSourceProperty);
@@ -98,15 +131,18 @@ public partial class CarouselXView : TemplatedView
         set => SetValue(EmptyViewTemplateProperty, value);
     }
 
-    public ObservableCollection<View> VisibleViews
-    {
-        get => (ObservableCollection<View>)GetValue(VisibleViewsProperty);
-    }
+    public ObservableCollection<View> VisibleViews => (ObservableCollection<View>)GetValue(VisibleViewsProperty);
 
     public bool Loop
     {
         get => (bool)GetValue(LoopProperty);
         set => SetValue(LoopProperty, value);
+    }
+
+    public double Interval
+    {
+        get => (double)GetValue(IntervalProperty);
+        set => SetValue(IntervalProperty, value);
     }
 
     private static void OnItemsSourcePropertyChanged(BindableObject bindable, object oldValue, object newValue)
@@ -120,7 +156,8 @@ public partial class CarouselXView : TemplatedView
         if (newValue is INotifyCollectionChanged newCollections)
             newCollections.CollectionChanged += view.ItemsSourceCollectionChanged;
 
-        view.CreateChildren();
+        if (view.PART_Container.IsLoaded)
+            view.CreateChildren();
     }
 
     private static void OnItemTemplatePropertyChanged(BindableObject bindable, object oldValue, object newValue)
@@ -142,16 +179,30 @@ public partial class CarouselXView : TemplatedView
 
         view._currentEmptyView = view.CreateEmptyView(view.EmptyView, view.EmptyViewTemplate);
     }
+
+    private static void OnIntervalPropertyChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is not CarouselXView view)
+            return;
+
+        bool.TryParse(newValue?.ToString(), out var vRet);
+        _ = vRet ? view.StartLoop() : view.StopLoop();
+    }
 }
 
-public partial class CarouselXView 
+public partial class CarouselXView
 {
     public CarouselXView()
     {
         InitializeComponent();
         BackgroundColor = Colors.Transparent;
         WidthRequest = 1000d;
-        HeightRequest = 300d;
+        HeightRequest = 350d;
+        Padding = new(0d);
+
+        _timer = new TimerX(Interval);
+        _timer.Elapsed += Timer_Elapsed;
+
         var templateObject = GetTemplateChild(nameof(PART_Container));
         if (templateObject is AbsoluteLayout container)
             PART_Container = container;
@@ -169,12 +220,7 @@ public partial class CarouselXView
 
     View? _currentEmptyView;
     readonly double _scalX = 0.3;
-    readonly double _scalY = 0.2;
-
-    protected override void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        base.OnPropertyChanged(propertyName);
-    }
+    readonly double _scalY = 0.1;
 
     void PART_Container_Loaded(object? sender, EventArgs e)
     {
@@ -184,59 +230,16 @@ public partial class CarouselXView
 
     void PART_Container_SizeChanged(object? sender, EventArgs e)
     {
+        if (!PART_Container.IsLoaded)
+            return;
+
         CreateRect();
+        MoveChildern();
     }
 
     void ItemsSourceCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
 
-    }
-
-    void CreateChildren()
-    {
-        PART_Container.Clear();
-        _mapViews.Clear();
-        _mapDockViews.Clear();
-
-        if (ItemsSource?.GetEnumerator().MoveNext() ?? false)
-        {
-            PART_Container.Add(CreateEmptyView(EmptyView, EmptyViewTemplate));
-            return;
-        }
-
-        int index = 0;
-        foreach (var item in ItemsSource!)
-        {
-            var view = CreateItemView(item);
-            PART_Container.Add(view);
-            _mapViews[index] = view;
-
-            index++;
-
-            if (!_mapDockViews.TryGetValue(DockAlignment.Start, out _))
-            {
-                _mapDockViews[DockAlignment.Start] = view;
-                if (_mapDockRects.TryGetValue(DockAlignment.Start, out var dock))
-                    AbsoluteLayout.SetLayoutBounds(view, dock);
-                break;
-            }
-
-            if (!_mapDockViews.TryGetValue(DockAlignment.Center, out _))
-            {
-                _mapDockViews[DockAlignment.Center] = view;
-                if (_mapDockRects.TryGetValue(DockAlignment.Center, out var dock))
-                    AbsoluteLayout.SetLayoutBounds(view, dock);
-                break;
-            }
-
-            if (_mapDockViews.TryGetValue(DockAlignment.End, out _))
-            {
-                _mapDockViews[DockAlignment.End] = view;
-                if (_mapDockRects.TryGetValue(DockAlignment.End, out var dock))
-                    AbsoluteLayout.SetLayoutBounds(view, dock);
-                break;
-            }
-        }
     }
 
     void CreateRect()
@@ -247,8 +250,8 @@ public partial class CarouselXView
         if (double.IsNaN(width) || double.IsNaN(height) || width <= 0 || height <= 0)
             return;
 
-        double offsetX = width * _scalX;
-        double offsetY = height * _scalY;
+        double offsetX = width * _scalX / 2d;
+        double offsetY = height * _scalY / 2d;
 
         var viewWidth = width - 2 * offsetX;
         var viewHeight = height;
@@ -256,15 +259,97 @@ public partial class CarouselXView
         double left = offsetX;
         double top = 0;
 
-        var rect = new Rect(left,top, viewWidth, viewHeight);
+        var rect = new Rect(left, top, viewWidth, viewHeight);
         _mapDockRects[DockAlignment.Center] = rect;
 
-        viewHeight = height - offsetY;
+        viewHeight = height - offsetY * 2;
         rect = new Rect(0, offsetY, viewWidth, viewHeight);
         _mapDockRects[DockAlignment.Start] = rect;
 
         rect = new Rect(width - viewWidth, offsetY, viewWidth, viewHeight);
         _mapDockRects[DockAlignment.End] = rect;
+        _mapDockRects[DockAlignment.Default] = rect;
+    }
+
+    void CreateChildren()
+    {
+        StopLoop();
+        VisibleViews.Clear();
+        PART_Container.Clear();
+        _mapViews.Clear();
+        _mapDockViews.Clear();
+
+        if (!ItemsSource?.GetEnumerator().MoveNext() ?? true)
+        {
+            PART_Container.Add(CreateEmptyView(EmptyView, EmptyViewTemplate));
+            return;
+        }
+
+        int index = 0;
+        foreach (var item in ItemsSource!)
+        {
+            var view = CreateItemView(item);
+            VisibleViews.Add(view);
+            PART_Container.Add(view);
+            _mapViews[index] = view;
+            index++;
+
+            if (!_mapDockViews.TryGetValue(DockAlignment.Start, out _))
+            {
+                view.ZIndex = 1;
+                _mapDockViews[DockAlignment.Start] = view;
+                if (_mapDockRects.TryGetValue(DockAlignment.Start, out var dock))
+                    AbsoluteLayout.SetLayoutBounds(view, dock);
+                continue;
+            }
+
+            if (!_mapDockViews.TryGetValue(DockAlignment.Center, out _))
+            {
+                view.ZIndex = 2;
+                _mapDockViews[DockAlignment.Center] = view;
+                if (_mapDockRects.TryGetValue(DockAlignment.Center, out var dock))
+                    AbsoluteLayout.SetLayoutBounds(view, dock);
+                continue;
+            }
+
+            if (!_mapDockViews.TryGetValue(DockAlignment.End, out _))
+            {
+                view.ZIndex = 1;
+                _mapDockViews[DockAlignment.End] = view;
+                if (_mapDockRects.TryGetValue(DockAlignment.End, out var dock))
+                    AbsoluteLayout.SetLayoutBounds(view, dock);
+                continue;
+            }
+
+            {
+                view.ZIndex = 0;
+                if (_mapDockRects.TryGetValue(DockAlignment.End, out var dock))
+                    AbsoluteLayout.SetLayoutBounds(view, dock);
+            }
+        }
+
+        StartLoop();
+    }
+
+    void MoveChildern()
+    {
+        if (_mapDockViews.TryGetValue(DockAlignment.Start, out var view1))
+        {
+            if (_mapDockRects.TryGetValue(DockAlignment.Start, out var dock))
+                AbsoluteLayout.SetLayoutBounds(view1, dock);
+        }
+
+        if (_mapDockViews.TryGetValue(DockAlignment.Center, out var view2))
+        {
+            if (_mapDockRects.TryGetValue(DockAlignment.Center, out var dock))
+                AbsoluteLayout.SetLayoutBounds(view2, dock);
+        }
+
+        if (_mapDockViews.TryGetValue(DockAlignment.End, out var view3))
+        {
+            if (_mapDockRects.TryGetValue(DockAlignment.End, out var dock))
+                AbsoluteLayout.SetLayoutBounds(view3, dock);
+        }
     }
 
     View CreateEmptyView(object? emptyView, DataTemplate? dataTemplate)
@@ -296,8 +381,98 @@ public partial class CarouselXView
         }
     }
 
+    bool StartLoop()
+    {
+        if (!Loop)
+            return false;
 
+        if (_mapDockViews.Count <= 0)
+            return false;
 
+        _timer.Start();
+        return true;
+    }
+
+    bool StopLoop()
+    {
+        if (Loop)
+            return false;
+
+        _timer.Stop();
+        return true;
+    }
 }
 
+public partial class CarouselXView
+{
+    readonly TimerX _timer;
 
+    private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e) => Dispatcher.DispatchAsync(() => Move2Next());
+
+    void Move2Next()
+    {
+
+    }
+
+    void Move2Preview()
+    {
+
+    }
+
+    void Move2Assign()
+    {
+
+    }
+}
+
+public partial class CarouselXView
+{
+    protected override void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        base.OnPropertyChanged(propertyName);
+    }
+
+    Command<object>? _selectedCommand = default;
+    public ICommand SelectedCommand => _selectedCommand ??= new(t =>
+    {
+
+    });
+
+    Command<object>? _tapCommand = default;
+    public ICommand TapCommand => _tapCommand ??= new(t =>
+    {
+
+    });
+
+    //点击手势
+    private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+    {
+
+    }
+
+    //滑动手势
+    private void PanGestureRecognizer_PanUpdated(object sender, PanUpdatedEventArgs e)
+    {
+
+    }
+
+    //轻扫手势
+    private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
+    {
+        switch (e.Direction)
+        {
+            case SwipeDirection.Right:
+                Move2Next();
+                break;
+            case SwipeDirection.Left:
+                Move2Preview();
+                break;
+            case SwipeDirection.Up:
+                break;
+            case SwipeDirection.Down:
+                break;
+            default:
+                break;
+        }
+    }
+}

@@ -105,6 +105,9 @@ public partial class BallLoading : TemplatedView
 
     private void PARTContainer_SizeChanged(object? sender, EventArgs e)
     {
+        if (!IsLoaded)
+            return;
+
         CalculateSize();
         PlayAnimation();
     }

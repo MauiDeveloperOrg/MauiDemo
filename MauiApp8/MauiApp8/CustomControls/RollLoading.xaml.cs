@@ -114,6 +114,9 @@ public partial class RollLoading : TemplatedView
     }
     private void RollLoading_SizeChanged(object? sender, EventArgs e)
     {
+        if (!IsLoaded)
+            return;
+        
         CalculateSize();
         PlayAnimation();
     }

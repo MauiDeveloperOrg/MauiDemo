@@ -3,7 +3,7 @@
                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                xmlns:handlers="using:Mauiapp8.Handlers"
                x:Class="MauiApp8.CustomControls.OutlinedEntry"
-               x:Name="this" >
+               x:Name="this">
 
     <TemplatedView.ControlTemplate>
         <ControlTemplate>
@@ -17,7 +17,7 @@
                        HorizontalOptions="StartAndExpand" 
                        VerticalOptions="Center"/>
 
-                <Frame x:Name="PART_faeBorder" Padding="8" BorderColor="Gray" BackgroundColor="Transparent">
+                <Frame x:Name="PART_faeBorder" Padding="8" BorderColor="Gray" BackgroundColor="Transparent" >
                     <handlers:BorderlessEntry Text="{Binding Source={x:Reference this}, Path=Text}" Focused="Entry_Focused" Unfocused="Entry_Unfocused"/>
                 </Frame>
             </Grid>
