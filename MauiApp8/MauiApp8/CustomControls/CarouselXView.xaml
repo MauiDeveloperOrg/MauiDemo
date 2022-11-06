@@ -19,8 +19,10 @@
                         <SwipeGestureRecognizer Direction="Right" Swiped="SwipeGestureRecognizer_Swiped"/>
                     </AbsoluteLayout.GestureRecognizers>
                 </AbsoluteLayout>
-                <Button Text="&lt;" HorizontalOptions="Start" CornerRadius="0" WidthRequest="50" HeightRequest="100" BackgroundColor="#30000000" />
-                <Button Text="&gt;" HorizontalOptions="End" CornerRadius="0" WidthRequest="50" HeightRequest="100" BackgroundColor="#30000000"/>
+                <Button Text="&lt;" HorizontalOptions="Start" CornerRadius="0" WidthRequest="50" HeightRequest="100" BackgroundColor="#30000000" 
+                        Command="{Binding Source={x:Reference this}, Path=PreCommand}"/>
+                <Button Text="&gt;" HorizontalOptions="End" CornerRadius="0" WidthRequest="50" HeightRequest="100" BackgroundColor="#30000000"
+                        Command="{Binding Source={x:Reference this}, Path=NextCommand}"/>
                 <HorizontalStackLayout x:Name="PART_Dock" Grid.Row="1" MinimumHeightRequest="20" HorizontalOptions="Center"
                                        Spacing="5" Margin="0" Padding="0" IsVisible="True" 
                                        BindableLayout.ItemsSource="{Binding Source={x:Reference this}, Path=ItemsSource}">

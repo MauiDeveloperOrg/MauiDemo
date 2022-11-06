@@ -220,7 +220,7 @@ public partial class CarouselXView
 
     View? _currentEmptyView;
     readonly double _scalX = 0.3;
-    readonly double _scalY = 0.1;
+    readonly double _scalY = 0.13;
 
     void PART_Container_Loaded(object? sender, EventArgs e)
     {
@@ -268,6 +268,7 @@ public partial class CarouselXView
 
         rect = new Rect(width - viewWidth, offsetY, viewWidth, viewHeight);
         _mapDockRects[DockAlignment.End] = rect;
+        rect = new Rect(left, offsetY, viewWidth, viewHeight);
         _mapDockRects[DockAlignment.Default] = rect;
     }
 
@@ -323,7 +324,8 @@ public partial class CarouselXView
 
             {
                 view.ZIndex = 0;
-                if (_mapDockRects.TryGetValue(DockAlignment.End, out var dock))
+                view.IsVisible = false;
+                if (_mapDockRects.TryGetValue(DockAlignment.Default, out var dock))
                     AbsoluteLayout.SetLayoutBounds(view, dock);
             }
         }
@@ -406,17 +408,295 @@ public partial class CarouselXView
 public partial class CarouselXView
 {
     readonly TimerX _timer;
+    readonly uint _animationLength = 1000;
+    int _currentIndex = 1;
 
     private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e) => Dispatcher.DispatchAsync(() => Move2Next());
 
     void Move2Next()
     {
+        if (_mapViews.Count < 3)
+            return;
 
+        var currentIndex = _currentIndex;
+        var preIndex = (_currentIndex + _mapViews.Count - 1) % _mapViews.Count;
+        var prepreIndex = (_currentIndex + _mapViews.Count - 2) % _mapViews.Count;
+        var nextIndex = (_currentIndex + 1) % _mapViews.Count;
+        var nextnextIndex = (_currentIndex + 2) % _mapViews.Count;
+
+        if (!_mapDockRects.TryGetValue(DockAlignment.Start, out var preRect))
+            return;
+
+        if (!_mapDockRects.TryGetValue(DockAlignment.Center, out var centerRect))
+            return;
+
+        if (!_mapDockRects.TryGetValue(DockAlignment.End, out var nextRect))
+            return;
+
+        if (!_mapDockRects.TryGetValue(DockAlignment.Default, out var defaultRect))
+            return;
+
+        var animation = new Animation();
+        var preView = _mapViews[preIndex];
+        if (nextnextIndex == preIndex)
+        {
+            //直接去右边
+            var movePreAnimation = new Animation(x => 
+            {
+                var rect = AbsoluteLayout.GetLayoutBounds(preView);
+                rect.X = x;
+                AbsoluteLayout.SetLayoutBounds(preView, rect);
+            }, preRect.Left, nextRect.Left, Easing.SinInOut, finished: ()=> 
+            {
+                _mapDockViews[DockAlignment.End] = preView;
+            });
+            animation.Insert(0, 1, movePreAnimation);
+        }
+        else
+        {
+            //去背面中间
+            preView.ZIndex = 0;
+            var movePreAnimation = new Animation(x =>
+            {
+                var rect = AbsoluteLayout.GetLayoutBounds(preView);
+                rect.X = x;
+                AbsoluteLayout.SetLayoutBounds(preView, rect);
+            }, preRect.Left, defaultRect.Left, Easing.SinInOut, finished: () => 
+            {
+                preView.IsVisible = false;
+            });
+            animation.Insert(0, 1, movePreAnimation); 
+        }
+
+        //中间左移
+        var centerView = _mapViews[currentIndex];
+        {
+            var moveCenterAnimation = new Animation(x =>
+            {
+                var rect = AbsoluteLayout.GetLayoutBounds(centerView);
+                rect.X = x;
+                AbsoluteLayout.SetLayoutBounds(centerView, rect);
+            },centerRect.Left, preRect.Left, Easing.SinInOut, finished: () => 
+            {
+                _mapDockViews[DockAlignment.Start] = centerView;
+            });
+            animation.Insert(0, 1, moveCenterAnimation);
+
+            var zIndexAnimation = new Animation(z =>
+            {
+                centerView.ZIndex = (int)z;
+            }, 0, 1, Easing.SinInOut);
+            animation.Insert(0.6, 0.7, zIndexAnimation);
+
+            var moveYCenterAnimation = new Animation(y =>
+            {
+                var rect = AbsoluteLayout.GetLayoutBounds(centerView);
+                rect.Y = y;
+                rect.Height = centerRect.Height - 2 * (y - centerRect.Y);
+                AbsoluteLayout.SetLayoutBounds(centerView, rect);
+            }, centerRect.Top, preRect.Top, Easing.SinInOut);
+            animation.Insert(0, 1, moveYCenterAnimation);
+        }
+
+        //右边左移 
+        var nextView = _mapViews[nextIndex];
+        {
+            var moveNextAniation = new Animation(x =>
+            {
+                
+                var rect = AbsoluteLayout.GetLayoutBounds(nextView);
+                rect.X = x;
+                AbsoluteLayout.SetLayoutBounds(nextView, rect);
+            }, nextRect.Left, centerRect.Left, Easing.SinInOut, finished: () => 
+            {
+               
+                _mapDockViews[DockAlignment.Center] = nextView;
+            });
+            animation.Insert(0, 1, moveNextAniation);
+
+            var zIndexAnimation = new Animation(z =>
+            {
+                nextView.ZIndex = (int)z;
+            }, 1, 2, Easing.SinInOut);
+            animation.Insert(0.6, 0.7, zIndexAnimation);
+
+            var moveYNextAnimation = new Animation(y =>
+            {
+                var rect = AbsoluteLayout.GetLayoutBounds(nextView);
+                rect.Y = y;       
+                rect.Height = nextRect.Height + 2 * (nextRect.Y - y);
+                AbsoluteLayout.SetLayoutBounds(nextView, rect);
+            },nextRect.Top, centerRect.Top, Easing.SinInOut);
+            animation.Insert(0, 1, moveYNextAnimation);
+        }
+
+        //新的右移  
+        if (nextnextIndex != preIndex)
+        {
+            var nextnextView = _mapViews[nextnextIndex];
+            nextnextView.IsVisible = true;
+            var moveNextNextAnimation = new Animation(x => 
+            {
+                //nextnextView.ZIndex = 1;
+                var rect = AbsoluteLayout.GetLayoutBounds(nextnextView);
+                rect.X = x;
+                AbsoluteLayout.SetLayoutBounds(nextnextView, rect);
+            }, defaultRect.Left, nextRect.Left, Easing.SinInOut, finished: () => 
+            {
+                
+            });
+            animation.Insert(0, 1, moveNextNextAnimation);
+
+            var zIndexAnimation = new Animation(z =>
+            {
+                nextnextView.ZIndex = (int)z;
+            }, 0, 1, Easing.SinInOut);
+            animation.Insert(0.6, 0.7, zIndexAnimation);
+        }
+
+        animation.Commit(this, "MoveAnimation", length:_animationLength, finished: (x, b) => 
+        {
+            _currentIndex = nextIndex;
+            this.CancelAnimations();
+            animation.Dispose();
+        });
     }
 
     void Move2Preview()
     {
+        if (_mapViews.Count < 3)
+            return;
 
+        var currentIndex = _currentIndex;
+        var preIndex = (_currentIndex + _mapViews.Count - 1) % _mapViews.Count;
+        var prepreIndex = (_currentIndex + _mapViews.Count - 2) % _mapViews.Count;
+        var nextIndex = (_currentIndex + 1) % _mapViews.Count;
+        var nextnextIndex = (_currentIndex + 2) % _mapViews.Count;
+
+        if (!_mapDockRects.TryGetValue(DockAlignment.Start, out var preRect))
+            return;
+
+        if (!_mapDockRects.TryGetValue(DockAlignment.Center, out var centerRect))
+            return;
+
+        if (!_mapDockRects.TryGetValue(DockAlignment.End, out var nextRect))
+            return;
+
+        if (!_mapDockRects.TryGetValue(DockAlignment.Default, out var defaultRect))
+            return;
+
+        var animation = new Animation();
+        var preView = _mapViews[preIndex];
+        if (nextnextIndex == preIndex)
+        {
+            //直接去右边
+            var movePreAnimation = new Animation(x =>
+            {
+                var rect = AbsoluteLayout.GetLayoutBounds(preView);
+                rect.X = x;
+                AbsoluteLayout.SetLayoutBounds(preView, rect);
+            }, preRect.Left, nextRect.Left, Easing.SinInOut, finished: () =>
+            {
+                _mapDockViews[DockAlignment.End] = preView;
+            });
+            animation.Insert(0, 1, movePreAnimation);
+        }
+        else
+        {
+            //去背面中间
+            var movePreAnimation = new Animation(x =>
+            {
+
+                var rect = AbsoluteLayout.GetLayoutBounds(preView);
+                rect.X = x;
+                AbsoluteLayout.SetLayoutBounds(preView, rect);
+            }, preRect.Left, defaultRect.Left, Easing.SinInOut, finished: () =>
+            {
+                preView.ZIndex = 0;
+            });
+            animation.Insert(0, 1, movePreAnimation);
+        }
+
+        //中间右移
+        var centerView = _mapViews[currentIndex];
+        {
+            var moveCenterAnimation = new Animation(x =>
+            {
+                var rect = AbsoluteLayout.GetLayoutBounds(centerView);
+                rect.X = x;
+                AbsoluteLayout.SetLayoutBounds(centerView, rect);
+            }, centerRect.Left, preRect.Left, Easing.SinInOut, finished: () =>
+            {
+                //centerView.ZIndex = 1;
+                _mapDockViews[DockAlignment.Start] = centerView;
+            });
+            animation.Insert(0, 1, moveCenterAnimation);
+
+            var zIndexAnimation = new Animation(z =>
+            {
+                centerView.ZIndex = 1;
+            }, 0, 1);
+            animation.Insert(0.7, 0.8, zIndexAnimation);
+
+            var moveYCenterAnimation = new Animation(y =>
+            {
+                var rect = AbsoluteLayout.GetLayoutBounds(centerView);
+                rect.Y = y;
+                rect.Height = centerRect.Height - 2 * (y);
+                AbsoluteLayout.SetLayoutBounds(centerView, rect);
+            }, centerRect.Top, preRect.Top, Easing.SinInOut);
+            animation.Insert(0, 1, moveYCenterAnimation);
+        }
+
+        //右边左移 
+        var nextView = _mapViews[nextIndex];
+        {
+            var moveNextAniation = new Animation(x =>
+            {
+
+                var rect = AbsoluteLayout.GetLayoutBounds(nextView);
+                rect.X = x;
+                AbsoluteLayout.SetLayoutBounds(nextView, rect);
+            }, nextRect.Left, centerRect.Left, Easing.SinInOut, finished: () =>
+            {
+                nextView.ZIndex = 2;
+                _mapDockViews[DockAlignment.Center] = nextView;
+            });
+            animation.Insert(0, 1, moveNextAniation);
+
+            var moveYNextAnimation = new Animation(y =>
+            {
+                var rect = AbsoluteLayout.GetLayoutBounds(nextView);
+                rect.Y = y;
+                rect.Height = nextRect.Height + 2 * (nextRect.Y - y);
+                AbsoluteLayout.SetLayoutBounds(nextView, rect);
+            }, nextRect.Top, centerRect.Top, Easing.SinInOut);
+            animation.Insert(0, 1, moveYNextAnimation);
+        }
+
+        //新的右移  
+        if (nextnextIndex != preIndex)
+        {
+            var nextnextView = _mapViews[nextnextIndex];
+            var moveNextNextAnimation = new Animation(x =>
+            {
+
+                var rect = AbsoluteLayout.GetLayoutBounds(nextnextView);
+                rect.X = x;
+                AbsoluteLayout.SetLayoutBounds(nextnextView, rect);
+            }, defaultRect.Left, nextRect.Left, Easing.SinInOut, finished: () =>
+            {
+                nextnextView.ZIndex = 1;
+            });
+            animation.Insert(0, 1, moveNextNextAnimation);
+        }
+
+        animation.Commit(this, "MoveAnimation", length: _animationLength, finished: (x, b) =>
+        {
+            _currentIndex = nextIndex;
+            this.CancelAnimations();
+            animation.Dispose();
+        });
     }
 
     void Move2Assign()
@@ -442,6 +722,18 @@ public partial class CarouselXView
     public ICommand TapCommand => _tapCommand ??= new(t =>
     {
 
+    });
+
+    Command<object>? _preCommand = default;
+    public ICommand PreCommand => _preCommand ??= new(t =>
+    {
+
+    });
+
+    Command<object>? _nextCommand = default;
+    public ICommand NextCommand => _nextCommand ??= new(t =>
+    {
+        Move2Next();
     });
 
     //点击手势
