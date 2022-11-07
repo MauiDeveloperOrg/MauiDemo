@@ -33,7 +33,7 @@
 
             <customcontrols:BallLoading Grid.Row="3" HeightRequest="200" Space="30" RunningSpace="10" IsPlay="True"/>
 
-            <customcontrols:CarouselXView Grid.Row="4" ItemsSource="{Binding Students}" BackgroundColor="Transparent">
+            <customcontrols:CarouselXView Grid.Row="4" ItemsSource="{Binding Students}" BackgroundColor="Transparent" Loop="False" Interval="1000">
                 <customcontrols:CarouselXView.ItemTemplate>
                     <DataTemplate>
                         <Border BackgroundColor="{Binding Color}" StrokeThickness="0">

@@ -21,14 +21,14 @@ public partial class OutlinedEntry : TemplatedView
     public static readonly BindableProperty TextProperty = BindableProperty.Create(
                                                            propertyName: nameof(Text),
                                                            returnType: typeof(string),
-                                                           declaringType: typeof(ProgressButton),
+                                                           declaringType: typeof(OutlinedEntry),
                                                            defaultValue: "",
                                                            defaultBindingMode: BindingMode.TwoWay);
 
     public static readonly BindableProperty PlaceholderProperty = BindableProperty.Create(
                                                                   propertyName: nameof(Placeholder),
                                                                   returnType: typeof(string),
-                                                                  declaringType: typeof(ProgressButton),
+                                                                  declaringType: typeof(OutlinedEntry),
                                                                   defaultValue: "",
                                                                   defaultBindingMode: BindingMode.TwoWay);
 

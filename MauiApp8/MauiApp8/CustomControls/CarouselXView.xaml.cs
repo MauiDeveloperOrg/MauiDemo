@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using TimerX = System.Timers.Timer;
@@ -16,29 +15,29 @@ internal enum DockAlignment
     End = 3,
 }
 
-file class SynchronizeInvoke : ISynchronizeInvoke
-{
-    bool _invokeRequired = false;
-    bool ISynchronizeInvoke.InvokeRequired => Volatile.Read(ref _invokeRequired);
-
-    IAsyncResult ISynchronizeInvoke.BeginInvoke(Delegate method, object?[]? args)
-    {
-        throw new NotImplementedException();
-    }
-
-    object? ISynchronizeInvoke.EndInvoke(IAsyncResult result)
-    {
-        throw new NotImplementedException();
-    }
-
-    object? ISynchronizeInvoke.Invoke(Delegate method, object?[]? args)
-    {
-        throw new NotImplementedException();
-    }
-}
-
 public partial class CarouselXView : TemplatedView
 {
+    public CarouselXView()
+    {
+        InitializeComponent();
+        BackgroundColor = Colors.Transparent;
+        WidthRequest = 1000d;
+        HeightRequest = 350d;
+        Padding = new(0d);
+
+        //_timer = new (Interval);
+        //_timer.Elapsed += Timer_Elapsed;
+
+        var templateObject = GetTemplateChild(nameof(PART_Container));
+        if (templateObject is AbsoluteLayout container)
+            PART_Container = container;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Container));
+
+        PART_Container.Loaded += PART_Container_Loaded;
+        PART_Container.SizeChanged += PART_Container_SizeChanged;
+    }
+
     public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create(
                                                               propertyName: nameof(ItemsSource),
                                                               returnType: typeof(IEnumerable),
@@ -91,7 +90,8 @@ public partial class CarouselXView : TemplatedView
                                                            returnType: typeof(bool),
                                                            declaringType: typeof(CarouselXView),
                                                            defaultValue: false,
-                                                           defaultBindingMode: BindingMode.TwoWay);
+                                                           defaultBindingMode: BindingMode.TwoWay,
+                                                           propertyChanged: OnLoopPropertyChanged);
 
     public static readonly BindableProperty IntervalProperty = BindableProperty.Create(
                                                                propertyName: nameof(Interval),
@@ -180,39 +180,29 @@ public partial class CarouselXView : TemplatedView
         view._currentEmptyView = view.CreateEmptyView(view.EmptyView, view.EmptyViewTemplate);
     }
 
-    private static void OnIntervalPropertyChanged(BindableObject bindable, object oldValue, object newValue)
+    private static async void OnIntervalPropertyChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is not CarouselXView view)
+            return;
+
+        view.StopLoop();
+        await view.StartLoop(); 
+    }
+
+    private static async void OnLoopPropertyChanged(BindableObject bindable, object oldValue, object newValue)
     {
         if (bindable is not CarouselXView view)
             return;
 
         bool.TryParse(newValue?.ToString(), out var vRet);
-        _ = vRet ? view.StartLoop() : view.StopLoop();
+        view.StopLoop();
+        if (vRet)
+            await view.StartLoop();
     }
 }
 
 public partial class CarouselXView
 {
-    public CarouselXView()
-    {
-        InitializeComponent();
-        BackgroundColor = Colors.Transparent;
-        WidthRequest = 1000d;
-        HeightRequest = 350d;
-        Padding = new(0d);
-
-        _timer = new TimerX(Interval);
-        _timer.Elapsed += Timer_Elapsed;
-
-        var templateObject = GetTemplateChild(nameof(PART_Container));
-        if (templateObject is AbsoluteLayout container)
-            PART_Container = container;
-        else
-            ArgumentNullException.ThrowIfNull(nameof(PART_Container));
-
-        PART_Container.Loaded += PART_Container_Loaded;
-        PART_Container.SizeChanged += PART_Container_SizeChanged;
-    }
-
     readonly AbsoluteLayout PART_Container = default!;
     readonly Dictionary<int, View> _mapViews = new();
     readonly Dictionary<DockAlignment, View> _mapDockViews = new();
@@ -268,11 +258,12 @@ public partial class CarouselXView
 
         rect = new Rect(width - viewWidth, offsetY, viewWidth, viewHeight);
         _mapDockRects[DockAlignment.End] = rect;
+
         rect = new Rect(left, offsetY, viewWidth, viewHeight);
         _mapDockRects[DockAlignment.Default] = rect;
     }
 
-    void CreateChildren()
+    async void CreateChildren()
     {
         StopLoop();
         VisibleViews.Clear();
@@ -330,7 +321,7 @@ public partial class CarouselXView
             }
         }
 
-        StartLoop();
+       await StartLoop();
     }
 
     void MoveChildern()
@@ -383,15 +374,31 @@ public partial class CarouselXView
         }
     }
 
-    bool StartLoop()
+    async Task<bool> StartLoop()
     {
         if (!Loop)
+            return false;
+
+        if (!IsLoaded)
             return false;
 
         if (_mapDockViews.Count <= 0)
             return false;
 
-        _timer.Start();
+        if (Interval <= 0)
+            return false;
+
+        _timer = new(TimeSpan.FromMilliseconds(Interval));
+
+        for (; ; )
+        {
+            var result = await _timer.WaitForNextTickAsync();
+            if (result)
+                Move2Next();
+            else
+                break;
+        }
+
         return true;
     }
 
@@ -400,19 +407,18 @@ public partial class CarouselXView
         if (Loop)
             return false;
 
-        _timer.Stop();
+        _timer?.Dispose();
+        //_timer.Stop();
         return true;
     }
 }
 
 public partial class CarouselXView
 {
-    readonly TimerX _timer;
+    PeriodicTimer? _timer;
     readonly uint _animationLength = 800;
     int _currentIndex = 1;
     bool _isAnimating = false;
-
-    private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e) => Dispatcher.DispatchAsync(() => Move2Next());
 
     void Move2Next()
     {
@@ -440,10 +446,13 @@ public partial class CarouselXView
         if (!_mapDockRects.TryGetValue(DockAlignment.Default, out var defaultRect))
             return;
 
+        _isAnimating = true;
+
         var animation = new Animation();
-        var preView = _mapViews[preIndex];
+        
         if (nextnextIndex == preIndex)
         {
+            var preView = _mapViews[preIndex];
             //直接去右边
             var movePreAnimation = new Animation(x =>
             {
@@ -458,6 +467,7 @@ public partial class CarouselXView
         }
         else
         {
+            var preView = _mapViews[preIndex];
             //去背面中间
             var movePreAnimation = new Animation(x =>
             {
@@ -466,26 +476,26 @@ public partial class CarouselXView
                 AbsoluteLayout.SetLayoutBounds(preView, rect);
             }, preRect.Left, defaultRect.Left, Easing.SinInOut, finished: () =>
             {
-  
+
             });
             animation.Insert(0, 1, movePreAnimation);
 
             var zIndexAnimation = new Animation(z =>
             {
                 preView.ZIndex = 0;
-            }, 0, 1, Easing.SinInOut);
+            }, 0, 1);
             animation.Insert(0, 0.1, zIndexAnimation);
 
             var visiblityAnimation = new Animation(z =>
             {
                 preView.IsVisible = false;
-            }, 0, 1, Easing.SinInOut);
+            }, 0, 1);
             animation.Insert(0.9, 1, visiblityAnimation);
         }
 
-        //中间左移
-        var centerView = _mapViews[currentIndex];
+        //中间左移     
         {
+            var centerView = _mapViews[currentIndex];
             var moveCenterAnimation = new Animation(x =>
             {
                 var rect = AbsoluteLayout.GetLayoutBounds(centerView);
@@ -497,12 +507,6 @@ public partial class CarouselXView
             });
             animation.Insert(0, 1, moveCenterAnimation);
 
-            var zIndexAnimation = new Animation(z =>
-            {
-                centerView.ZIndex = (int)z;
-            }, 0, 1, Easing.SinInOut);
-            animation.Insert(0.6, 0.7, zIndexAnimation);
-
             var moveYCenterAnimation = new Animation(y =>
             {
                 var rect = AbsoluteLayout.GetLayoutBounds(centerView);
@@ -511,11 +515,17 @@ public partial class CarouselXView
                 AbsoluteLayout.SetLayoutBounds(centerView, rect);
             }, centerRect.Top, preRect.Top, Easing.SinInOut);
             animation.Insert(0, 1, moveYCenterAnimation);
+
+            var zIndexAnimation = new Animation(z =>
+            {
+                centerView.ZIndex = 1;
+            }, 0, 1, Easing.SinInOut);
+            animation.Insert(0.6, 0.7, zIndexAnimation);      
         }
 
         //右边左移 
-        var nextView = _mapViews[nextIndex];
         {
+            var nextView = _mapViews[nextIndex];
             var moveNextAniation = new Animation(x =>
             {
                 var rect = AbsoluteLayout.GetLayoutBounds(nextView);
@@ -527,12 +537,6 @@ public partial class CarouselXView
             });
             animation.Insert(0, 1, moveNextAniation);
 
-            var zIndexAnimation = new Animation(z =>
-            {
-                nextView.ZIndex = (int)z;
-            }, 1, 2, Easing.SinInOut);
-            animation.Insert(0.6, 0.7, zIndexAnimation);
-
             var moveYNextAnimation = new Animation(y =>
             {
                 var rect = AbsoluteLayout.GetLayoutBounds(nextView);
@@ -541,6 +545,12 @@ public partial class CarouselXView
                 AbsoluteLayout.SetLayoutBounds(nextView, rect);
             }, nextRect.Top, centerRect.Top, Easing.SinInOut);
             animation.Insert(0, 1, moveYNextAnimation);
+
+            var zIndexAnimation = new Animation(z =>
+            {
+                nextView.ZIndex = (int)z;
+            }, 1, 2);
+            animation.Insert(0.6, 0.7, zIndexAnimation);
         }
 
         //新的右移  
@@ -554,24 +564,23 @@ public partial class CarouselXView
                 AbsoluteLayout.SetLayoutBounds(nextnextView, rect);
             }, defaultRect.Left, nextRect.Left, Easing.SinInOut, finished: () =>
             {
-
+                _mapDockViews[DockAlignment.End] = nextnextView;
             });
             animation.Insert(0, 1, moveNextNextAnimation);
 
             var zIndexAnimation = new Animation(z =>
             {
                 nextnextView.ZIndex = (int)z;
-            }, 0, 1, Easing.SinInOut);
+            }, 0, 1);
             animation.Insert(0.6, 0.7, zIndexAnimation);
 
             var visiblityAnimation = new Animation(z =>
             {
                 nextnextView.IsVisible = true;
-            }, 0, 1, Easing.SinInOut);
+            }, 0, 1);
             animation.Insert(0, 0.1, visiblityAnimation);
         }
 
-        _isAnimating = true;
         animation.Commit(this, "MoveAnimation", length: _animationLength, finished: (x, b) =>
         {
             _currentIndex = nextIndex;
@@ -581,7 +590,7 @@ public partial class CarouselXView
         });
     }
 
-    void Move2Preview()
+    void Move2Pre()
     {
         if (_mapViews.Count < 3)
             return;
@@ -607,11 +616,13 @@ public partial class CarouselXView
         if (!_mapDockRects.TryGetValue(DockAlignment.Default, out var defaultRect))
             return;
 
+        _isAnimating = true;
+
         var animation = new Animation();
-        var nextView = _mapViews[nextIndex];
         if (prepreIndex == nextIndex)
         {
             //直接去左边
+            var nextView = _mapViews[nextIndex];
             var moveNextAnimation = new Animation(x =>
             {
                 var rect = AbsoluteLayout.GetLayoutBounds(nextView);
@@ -626,6 +637,7 @@ public partial class CarouselXView
         else
         {
             //去背面中间
+            var nextView = _mapViews[nextIndex];
             var moveNextAnimation = new Animation(x =>
             {
                 var rect = AbsoluteLayout.GetLayoutBounds(nextView);
@@ -633,20 +645,20 @@ public partial class CarouselXView
                 AbsoluteLayout.SetLayoutBounds(nextView, rect);
             }, nextRect.Left, defaultRect.Left, Easing.SinInOut, finished: () =>
             {
-                
+
             });
             animation.Insert(0, 1, moveNextAnimation);
 
             var zIndexAnimation = new Animation(z =>
             {
                 nextView.ZIndex = 0;
-            }, 0, 1, Easing.SinInOut);
+            }, 0, 1);
             animation.Insert(0, 0.1, zIndexAnimation);
 
             var visiblityAnimation = new Animation(z =>
             {
                 nextView.IsVisible = false;
-            }, 0, 1, Easing.SinInOut);
+            }, 0, 1);
             animation.Insert(0.9, 1, visiblityAnimation);
         }
 
@@ -664,12 +676,6 @@ public partial class CarouselXView
             });
             animation.Insert(0, 1, moveCenterAnimation);
 
-            var zIndexAnimation = new Animation(z =>
-            {
-                centerView.ZIndex = (int)z;
-            }, 0, 1, Easing.SinInOut);
-            animation.Insert(0.6, 0.7, zIndexAnimation);
-
             var moveYCenterAnimation = new Animation(y =>
             {
                 var rect = AbsoluteLayout.GetLayoutBounds(centerView);
@@ -678,10 +684,16 @@ public partial class CarouselXView
                 AbsoluteLayout.SetLayoutBounds(centerView, rect);
             }, centerRect.Top, nextRect.Top, Easing.SinInOut);
             animation.Insert(0, 1, moveYCenterAnimation);
+
+            var zIndexAnimation = new Animation(z =>
+            {
+                centerView.ZIndex = 1;
+            }, 0, 1);
+            animation.Insert(0.6, 0.7, zIndexAnimation);
         }
 
         //左边右移 
-        var preView = _mapViews[nextIndex];
+        var preView = _mapViews[preIndex];
         {
             var movePreAniation = new Animation(x =>
             {
@@ -706,7 +718,7 @@ public partial class CarouselXView
             var zIndexAnimation = new Animation(z =>
             {
                 preView.ZIndex = (int)z;
-            }, 1, 2, Easing.SinInOut);
+            }, 1, 2);
             animation.Insert(0.6, 0.7, zIndexAnimation);
         }
 
@@ -719,26 +731,25 @@ public partial class CarouselXView
                 var rect = AbsoluteLayout.GetLayoutBounds(prepreView);
                 rect.X = x;
                 AbsoluteLayout.SetLayoutBounds(prepreView, rect);
-            }, defaultRect.Left, nextRect.Left, Easing.SinInOut, finished: () =>
+            }, defaultRect.Left, preRect.Left, Easing.SinInOut, finished: () =>
             {
-
+                _mapDockViews[DockAlignment.Start] = prepreView;
             });
             animation.Insert(0, 1, moveNextNextAnimation);
 
             var zIndexAnimation = new Animation(z =>
             {
                 prepreView.ZIndex = (int)z;
-            }, 0, 1, Easing.SinInOut);
+            }, 0, 1);
             animation.Insert(0.6, 0.7, zIndexAnimation);
 
             var visiblityAnimation = new Animation(z =>
             {
                 prepreView.IsVisible = true;
-            }, 0, 1, Easing.SinInOut);
+            }, 0, 1);
             animation.Insert(0, 0.1, visiblityAnimation);
         }
 
-        _isAnimating = true;
         animation.Commit(this, "MoveAnimation", length: _animationLength, finished: (x, b) =>
         {
             _currentIndex = preIndex;
@@ -748,8 +759,188 @@ public partial class CarouselXView
         });
     }
 
-    void Move2Assign()
+    void Move2Assign(int index)
     {
+        var currentIndex = _currentIndex;
+        var preIndex = (_currentIndex + _mapViews.Count - 1) % _mapViews.Count;
+        var nextIndex = (_currentIndex + 1) % _mapViews.Count;
+
+        if (index == currentIndex)
+            return;
+
+        if (index == preIndex)
+        {
+            Move2Pre();
+            return;
+        }
+        
+        if (index == nextIndex)
+        {
+            Move2Next();
+            return;
+        }
+
+        if (_isAnimating)
+            return;
+
+        var targetCurrentIndex = index;
+        var targetPreIndex = (index + _mapViews.Count - 1) % _mapViews.Count;
+        var targetNextIndex = (index + 1) % _mapViews.Count;
+
+        if (!_mapDockRects.TryGetValue(DockAlignment.Start, out var preRect))
+            return;
+
+        if (!_mapDockRects.TryGetValue(DockAlignment.Center, out var centerRect))
+            return;
+
+        if (!_mapDockRects.TryGetValue(DockAlignment.End, out var nextRect))
+            return;
+
+        if (!_mapDockRects.TryGetValue(DockAlignment.Default, out var defaultRect))
+            return;
+
+        //先将现在的页面进行合拢
+
+        _isAnimating = true;
+        var animation = new Animation();
+
+        {
+            _mapDockViews.TryGetValue(DockAlignment.Start, out var preView);
+            if (preView is not null)
+            {
+                var movePreAnimation = new Animation(x =>
+                {
+                    var rect = AbsoluteLayout.GetLayoutBounds(preView);
+                    rect.X = x;
+                    AbsoluteLayout.SetLayoutBounds(preView, rect);
+                }, preRect.Left, defaultRect.Left, Easing.SinInOut);
+                animation.Insert(0, 0.45, movePreAnimation);
+
+                var zIndexAnimation = new Animation(z =>
+                {
+                    preView.ZIndex = 0;
+                    preView.IsVisible = false;
+                }, 0, 1);
+                animation.Insert(0.4, 0.45, zIndexAnimation);
+            }
+        }
+
+        {
+            _mapDockViews.TryGetValue(DockAlignment.Center, out var centerView);
+            if (centerView is not null)
+            {
+                var moveYCenterAnimation = new Animation(y =>
+                {
+                    var rect = AbsoluteLayout.GetLayoutBounds(centerView);
+                    rect.Y = y;
+                    rect.Height = centerRect.Height - 2 * (y - centerRect.Y);
+                    AbsoluteLayout.SetLayoutBounds(centerView, rect);
+                }, centerRect.Top, nextRect.Top, Easing.SinInOut);
+                animation.Insert(0, 0.45, moveYCenterAnimation);
+
+                var zIndexAnimation = new Animation(z =>
+                {
+                    centerView.ZIndex = 0;
+                    centerView.IsVisible = false;
+                }, 0, 1);
+                animation.Insert(0.4, 0.45, zIndexAnimation);
+            }
+        }
+
+        {
+            _mapDockViews.TryGetValue(DockAlignment.End, out var nextView);
+            if (nextView is not null)
+            {
+                var moveNextAnimation = new Animation(x =>
+                {
+                    var rect = AbsoluteLayout.GetLayoutBounds(nextView);
+                    rect.X = x;
+                    AbsoluteLayout.SetLayoutBounds(nextView, rect);
+                }, nextRect.Left, defaultRect.Left, Easing.SinInOut);
+                animation.Insert(0, 0.45, moveNextAnimation);
+
+                var zIndexAnimation = new Animation(z =>
+                {
+                    nextView.ZIndex = 0;
+                    nextView.IsVisible = false;
+                }, 0, 1);
+                animation.Insert(0.4, 0.45, zIndexAnimation);
+            }
+        }
+
+        //再将新页面呈现出来
+        {
+            var targerPreView = _mapViews[targetPreIndex];
+            var zIndexAnimation = new Animation(z =>
+            {
+                targerPreView.IsVisible = true;
+                targerPreView.ZIndex = 1;
+            }, 0, 1);
+            animation.Insert(0.5, 0.55, zIndexAnimation);
+
+            var movePreAnimation = new Animation(x => 
+            {
+                var rect = AbsoluteLayout.GetLayoutBounds(targerPreView);
+                rect.X = x;
+                AbsoluteLayout.SetLayoutBounds(targerPreView, rect);
+            }, defaultRect.Left, preRect.Left, Easing.SinInOut, () => 
+            {
+                _mapDockViews[DockAlignment.Start] = targerPreView;
+            });
+            animation.Insert(0.55,1, movePreAnimation);
+        }
+
+        {
+            var targetCenterView = _mapViews[targetCurrentIndex];
+            var zIndexAnimation = new Animation(z =>
+            {
+                targetCenterView.IsVisible = true;
+                targetCenterView.ZIndex = 2;
+            }, 0, 2);
+            animation.Insert(0.5, 0.55, zIndexAnimation);
+
+            var moveYCenterAnimation = new Animation(y =>
+            {
+                var rect = AbsoluteLayout.GetLayoutBounds(targetCenterView);
+                rect.Y = y;
+                rect.Height = defaultRect.Height + 2 * (defaultRect.Y - y);
+                AbsoluteLayout.SetLayoutBounds(targetCenterView, rect);
+            }, defaultRect.Top, centerRect.Top, Easing.SinInOut, () =>
+            {
+                _mapDockViews[DockAlignment.Center] = targetCenterView;
+            });
+            animation.Insert(0.55, 1, moveYCenterAnimation);
+        }
+
+        {
+            var targetNextView = _mapViews[targetNextIndex];
+            var zIndexAnimation = new Animation(z =>
+            {
+                targetNextView.IsVisible = true;
+                targetNextView.ZIndex = 1;
+            }, 0, 1);
+            animation.Insert(0.5, 0.55, zIndexAnimation);
+
+            var moveNextAnimation = new Animation(x =>
+            {
+                var rect = AbsoluteLayout.GetLayoutBounds(targetNextView);
+                rect.X = x;
+                AbsoluteLayout.SetLayoutBounds(targetNextView, rect);
+            }, defaultRect.Left, nextRect.Left, Easing.SinInOut, () => 
+            {
+                _mapDockViews[DockAlignment.End] = targetNextView;
+            });
+            animation.Insert(0.55, 1, moveNextAnimation);
+        }
+
+        animation.Commit(this, "MoveAnimation", length: _animationLength, finished: (x, b) =>
+        {
+            _currentIndex = index;
+            this.CancelAnimations();
+            animation.Dispose();
+            _isAnimating = false;
+        });
+
 
     }
 }
@@ -764,7 +955,26 @@ public partial class CarouselXView
     Command<object>? _selectedCommand = default;
     public ICommand SelectedCommand => _selectedCommand ??= new(t =>
     {
+        if (ItemsSource is null)
+            return;
 
+        int index = 0;
+        int tag = -1;
+        foreach (var item in ItemsSource)
+        {
+            if (t == item)
+            {
+                tag = index;
+                break;
+            }
+
+            ++index;
+        }
+
+        if (tag < 0)
+            return;
+
+        Move2Assign(tag);
     });
 
     Command<object>? _tapCommand = default;
@@ -776,7 +986,7 @@ public partial class CarouselXView
     Command<object>? _preCommand = default;
     public ICommand PreCommand => _preCommand ??= new(t =>
     {
-        Move2Preview();
+        Move2Pre();
     });
 
     Command<object>? _nextCommand = default;
@@ -806,7 +1016,7 @@ public partial class CarouselXView
                 Move2Next();
                 break;
             case SwipeDirection.Left:
-                Move2Preview();
+                Move2Pre();
                 break;
             case SwipeDirection.Up:
                 break;
