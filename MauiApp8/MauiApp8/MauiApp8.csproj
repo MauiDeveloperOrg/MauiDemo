@@ -54,10 +54,19 @@
 	</ItemGroup>
 		
 	<ItemGroup>
+	  <Compile Update="CustomControls\CarouselXView.xaml.cs">
+	    <DependentUpon>CarouselxView.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+		
+	<ItemGroup>
 	  <MauiXaml Update="CustomControls\BallLoading.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="CustomControls\CarouselXView.xaml">
+	  <MauiXaml Update="CustomControls\CarouselxView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="CustomControls\CarouselzView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="CustomControls\OutlinedEntry.xaml">

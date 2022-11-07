@@ -9,42 +9,7 @@ public partial class BallLoading : TemplatedView
         InitializeComponent();
         Padding = Thickness.Zero;
         HeightRequest = 200d;
-        var templateObject = GetTemplateChild(nameof(PART_Container));
-        if (templateObject is AbsoluteLayout container)
-            PART_Container = container;
-        else
-            ArgumentNullException.ThrowIfNull(nameof(PART_Container));
-
-        templateObject = GetTemplateChild(nameof(PART_Eillipse));
-        if (templateObject is Border border)
-            PART_Eillipse = border;
-        else
-            ArgumentNullException.ThrowIfNull(nameof(PART_Eillipse));
-
-        templateObject = GetTemplateChild(nameof(PART_Eillipse1));
-        if (templateObject is Border border1)
-            PART_Eillipse1 = border1;
-        else
-            ArgumentNullException.ThrowIfNull(nameof(PART_Eillipse1));
-
-        templateObject = GetTemplateChild(nameof(PART_Eillipse2));
-        if (templateObject is Border border2)
-            PART_Eillipse2 = border2;
-        else
-            ArgumentNullException.ThrowIfNull(nameof(PART_Eillipse3));
-
-        templateObject = GetTemplateChild(nameof(PART_Eillipse3));
-        if (templateObject is Border border3)
-            PART_Eillipse3 = border3;
-        else
-            ArgumentNullException.ThrowIfNull(nameof(PART_Eillipse4));
-
-        templateObject = GetTemplateChild(nameof(PART_Eillipse4));
-        if (templateObject is Border border4)
-            PART_Eillipse4 = border4;
-        else
-            ArgumentNullException.ThrowIfNull(nameof(PART_Eillipse4));
-
+      
         Loaded += BallLoading_Loaded;
         SizeChanged += PARTContainer_SizeChanged;
     }
@@ -70,12 +35,12 @@ public partial class BallLoading : TemplatedView
                                                              defaultValue: false,
                                                              defaultBindingMode: BindingMode.TwoWay);
 
-    readonly AbsoluteLayout PART_Container = default!;
-    readonly Border PART_Eillipse = default!;
-    readonly Border PART_Eillipse1= default!;
-    readonly Border PART_Eillipse2= default!;
-    readonly Border PART_Eillipse3= default!;
-    readonly Border PART_Eillipse4 = default!;
+    AbsoluteLayout PART_Container = default!;
+    Border PART_Eillipse = default!;
+    Border PART_Eillipse1= default!;
+    Border PART_Eillipse2= default!;
+    Border PART_Eillipse3= default!;
+    Border PART_Eillipse4 = default!;
 
     double Count { get; set; } = 5d; 
     double Trip { get; set; } = 0d;
@@ -116,6 +81,47 @@ public partial class BallLoading : TemplatedView
     {
         CalculateSize();
         PlayAnimation();
+    }
+
+    protected override void OnApplyTemplate()
+    {
+        base.OnApplyTemplate();
+
+        var templateObject = GetTemplateChild(nameof(PART_Container));
+        if (templateObject is AbsoluteLayout container)
+            PART_Container = container;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Container));
+
+        templateObject = GetTemplateChild(nameof(PART_Eillipse));
+        if (templateObject is Border border)
+            PART_Eillipse = border;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Eillipse));
+
+        templateObject = GetTemplateChild(nameof(PART_Eillipse1));
+        if (templateObject is Border border1)
+            PART_Eillipse1 = border1;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Eillipse1));
+
+        templateObject = GetTemplateChild(nameof(PART_Eillipse2));
+        if (templateObject is Border border2)
+            PART_Eillipse2 = border2;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Eillipse3));
+
+        templateObject = GetTemplateChild(nameof(PART_Eillipse3));
+        if (templateObject is Border border3)
+            PART_Eillipse3 = border3;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Eillipse4));
+
+        templateObject = GetTemplateChild(nameof(PART_Eillipse4));
+        if (templateObject is Border border4)
+            PART_Eillipse4 = border4;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Eillipse4));
     }
 
     protected override void OnPropertyChanged([CallerMemberName] string? propertyName = null)

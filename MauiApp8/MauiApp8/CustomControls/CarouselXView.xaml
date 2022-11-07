@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <TemplatedView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-               x:Class="MauiApp8.CustomControls.CarouselXView"
+               x:Class="MauiApp8.CustomControls.CarouselxView"
                x:Name="this">
 
     <TemplatedView.ControlTemplate>
@@ -28,7 +28,9 @@
                                        BindableLayout.ItemsSource="{Binding Source={x:Reference this}, Path=ItemsSource}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
-                            <Button HeightRequest="10" WidthRequest="20" CornerRadius="5" Padding="0" Margin="0" Command="{Binding Source={x:Reference this}, Path=SelectedCommand}" CommandParameter="{Binding}"/>
+                            <Button HeightRequest="10" WidthRequest="20" CornerRadius="5" Padding="0" Margin="0" 
+                                    Command="{Binding Source={x:Reference this}, Path=SelectedCommand}" 
+                                    CommandParameter="{Binding}"/>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </HorizontalStackLayout>

@@ -5,17 +5,7 @@ public partial class OutlinedEntry : TemplatedView
 	public OutlinedEntry()
 	{
 		InitializeComponent();
-        var templateObject = GetTemplateChild(nameof(PART_lblPlaceholder));
-        if (templateObject is Label label)
-            PART_lblPlaceholder = label;
-        else
-            ArgumentNullException.ThrowIfNull(nameof(PART_lblPlaceholder));
-
-        templateObject = GetTemplateChild(nameof(PART_faeBorder));
-        if (templateObject is Frame frame)
-            PART_faeBorder = frame;
-        else
-            ArgumentNullException.ThrowIfNull(nameof(PART_faeBorder));
+       
     }
 
     public static readonly BindableProperty TextProperty = BindableProperty.Create(
@@ -32,8 +22,8 @@ public partial class OutlinedEntry : TemplatedView
                                                                   defaultValue: "",
                                                                   defaultBindingMode: BindingMode.TwoWay);
 
-    readonly Label PART_lblPlaceholder = default!;
-    readonly Frame PART_faeBorder = default!;
+    Label PART_lblPlaceholder = default!;
+    Frame PART_faeBorder = default!;
 
     public string Text
     {
@@ -45,6 +35,23 @@ public partial class OutlinedEntry : TemplatedView
     {
         get => (string)GetValue(PlaceholderProperty);
         set => SetValue(PlaceholderProperty, value);
+    }
+
+    protected override void OnApplyTemplate()
+    {
+        base.OnApplyTemplate();
+
+        var templateObject = GetTemplateChild(nameof(PART_lblPlaceholder));
+        if (templateObject is Label label)
+            PART_lblPlaceholder = label;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_lblPlaceholder));
+
+        templateObject = GetTemplateChild(nameof(PART_faeBorder));
+        if (templateObject is Frame frame)
+            PART_faeBorder = frame;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_faeBorder));
     }
 
     private void Entry_Focused(object sender, FocusEventArgs e)

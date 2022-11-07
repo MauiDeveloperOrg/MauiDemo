@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using TimerX = System.Timers.Timer;
+using System.Windows.Input; 
 
 namespace MauiApp8.CustomControls;
 
@@ -15,33 +14,21 @@ internal enum DockAlignment
     End = 3,
 }
 
-public partial class CarouselXView : TemplatedView
+public partial class CarouselxView : TemplatedView
 {
-    public CarouselXView()
+    public CarouselxView()
     {
         InitializeComponent();
         BackgroundColor = Colors.Transparent;
         WidthRequest = 1000d;
         HeightRequest = 350d;
         Padding = new(0d);
-
-        //_timer = new (Interval);
-        //_timer.Elapsed += Timer_Elapsed;
-
-        var templateObject = GetTemplateChild(nameof(PART_Container));
-        if (templateObject is AbsoluteLayout container)
-            PART_Container = container;
-        else
-            ArgumentNullException.ThrowIfNull(nameof(PART_Container));
-
-        PART_Container.Loaded += PART_Container_Loaded;
-        PART_Container.SizeChanged += PART_Container_SizeChanged;
     }
 
     public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create(
                                                               propertyName: nameof(ItemsSource),
                                                               returnType: typeof(IEnumerable),
-                                                              declaringType: typeof(CarouselXView),
+                                                              declaringType: typeof(CarouselxView),
                                                               defaultValue: default,
                                                               defaultBindingMode: BindingMode.TwoWay,
                                                               propertyChanged: OnItemsSourcePropertyChanged);
@@ -49,7 +36,7 @@ public partial class CarouselXView : TemplatedView
     public static readonly BindableProperty ItemTemplateProperty = BindableProperty.Create(
                                                                    propertyName: nameof(ItemTemplate),
                                                                    returnType: typeof(DataTemplate),
-                                                                   declaringType: typeof(CarouselXView),
+                                                                   declaringType: typeof(CarouselxView),
                                                                    defaultValue: default,
                                                                    defaultBindingMode: BindingMode.TwoWay,
                                                                    propertyChanged: OnItemTemplatePropertyChanged);
@@ -57,7 +44,7 @@ public partial class CarouselXView : TemplatedView
     public static readonly BindableProperty ItemTemplateSelectorProperty = BindableProperty.Create(
                                                                            propertyName: nameof(ItemTemplateSelector),
                                                                            returnType: typeof(DataTemplateSelector),
-                                                                           declaringType: typeof(CarouselXView),
+                                                                           declaringType: typeof(CarouselxView),
                                                                            defaultValue: default,
                                                                            defaultBindingMode: BindingMode.TwoWay,
                                                                            propertyChanged: OnItemTemplateSelectorPropertyChanged);
@@ -65,7 +52,7 @@ public partial class CarouselXView : TemplatedView
     public static readonly BindableProperty EmptyViewProperty = BindableProperty.Create(
                                                                 propertyName: nameof(EmptyView),
                                                                 returnType: typeof(object),
-                                                                declaringType: typeof(CarouselXView),
+                                                                declaringType: typeof(CarouselxView),
                                                                 defaultValue: default,
                                                                 defaultBindingMode: BindingMode.TwoWay,
                                                                 propertyChanged: OnEmptyViewPropertyChanged);
@@ -73,7 +60,7 @@ public partial class CarouselXView : TemplatedView
     public static readonly BindableProperty EmptyViewTemplateProperty = BindableProperty.Create(
                                                                         propertyName: nameof(EmptyViewTemplate),
                                                                         returnType: typeof(DataTemplate),
-                                                                        declaringType: typeof(CarouselXView),
+                                                                        declaringType: typeof(CarouselxView),
                                                                         defaultValue: default,
                                                                         defaultBindingMode: BindingMode.TwoWay,
                                                                         propertyChanged: OnEmptyViewPropertyChanged);
@@ -81,14 +68,14 @@ public partial class CarouselXView : TemplatedView
     public static readonly BindableProperty VisibleViewsProperty = BindableProperty.Create(
                                                                    propertyName: nameof(VisibleViews),
                                                                    returnType: typeof(ObservableCollection<View>),
-                                                                   declaringType: typeof(CarouselXView),
+                                                                   declaringType: typeof(CarouselxView),
                                                                    defaultValue: new ObservableCollection<View>(),
                                                                    defaultBindingMode: BindingMode.OneWay);
 
     public static readonly BindableProperty LoopProperty = BindableProperty.Create(
                                                            propertyName: nameof(Loop),
                                                            returnType: typeof(bool),
-                                                           declaringType: typeof(CarouselXView),
+                                                           declaringType: typeof(CarouselxView),
                                                            defaultValue: false,
                                                            defaultBindingMode: BindingMode.TwoWay,
                                                            propertyChanged: OnLoopPropertyChanged);
@@ -96,7 +83,7 @@ public partial class CarouselXView : TemplatedView
     public static readonly BindableProperty IntervalProperty = BindableProperty.Create(
                                                                propertyName: nameof(Interval),
                                                                returnType: typeof(double),
-                                                               declaringType: typeof(CarouselXView),
+                                                               declaringType: typeof(CarouselxView),
                                                                defaultValue: 400d,
                                                                defaultBindingMode: BindingMode.TwoWay,
                                                                propertyChanged: OnIntervalPropertyChanged);
@@ -147,7 +134,7 @@ public partial class CarouselXView : TemplatedView
 
     private static void OnItemsSourcePropertyChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        if (bindable is not CarouselXView view)
+        if (bindable is not CarouselxView view)
             return;
 
         if (oldValue is INotifyCollectionChanged oldCollections)
@@ -162,19 +149,19 @@ public partial class CarouselXView : TemplatedView
 
     private static void OnItemTemplatePropertyChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        if (bindable is not CarouselXView view)
+        if (bindable is not CarouselxView view)
             return;
     }
 
     private static void OnItemTemplateSelectorPropertyChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        if (bindable is not CarouselXView view)
+        if (bindable is not CarouselxView view)
             return;
     }
 
     private static void OnEmptyViewPropertyChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        if (bindable is not CarouselXView view)
+        if (bindable is not CarouselxView view)
             return;
 
         view._currentEmptyView = view.CreateEmptyView(view.EmptyView, view.EmptyViewTemplate);
@@ -182,7 +169,7 @@ public partial class CarouselXView : TemplatedView
 
     private static async void OnIntervalPropertyChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        if (bindable is not CarouselXView view)
+        if (bindable is not CarouselxView view)
             return;
 
         view.StopLoop();
@@ -191,7 +178,7 @@ public partial class CarouselXView : TemplatedView
 
     private static async void OnLoopPropertyChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        if (bindable is not CarouselXView view)
+        if (bindable is not CarouselxView view)
             return;
 
         bool.TryParse(newValue?.ToString(), out var vRet);
@@ -201,13 +188,13 @@ public partial class CarouselXView : TemplatedView
     }
 }
 
-public partial class CarouselXView
+public partial class CarouselxView
 {
-    readonly AbsoluteLayout PART_Container = default!;
     readonly Dictionary<int, View> _mapViews = new();
     readonly Dictionary<DockAlignment, View> _mapDockViews = new();
     readonly Dictionary<DockAlignment, Rect> _mapDockRects = new();
 
+    AbsoluteLayout PART_Container = default!;
     View? _currentEmptyView;
     readonly double _scalX = 0.3;
     readonly double _scalY = 0.13;
@@ -229,13 +216,27 @@ public partial class CarouselXView
 
     void ItemsSourceCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-
+        switch (e.Action)
+        {
+            case NotifyCollectionChangedAction.Add:
+                break;
+            case NotifyCollectionChangedAction.Remove:
+                break;
+            case NotifyCollectionChangedAction.Replace:
+                break;
+            case NotifyCollectionChangedAction.Move:
+                break;
+            case NotifyCollectionChangedAction.Reset:
+                break;
+            default:
+                break;
+        }
     }
 
     void CreateRect()
     {
-        var width = PART_Container.Width - Padding.HorizontalThickness;
-        var height = PART_Container.Height - Padding.VerticalThickness;
+        var width = PART_Container.Width;
+        var height = PART_Container.Height;
 
         if (double.IsNaN(width) || double.IsNaN(height) || width <= 0 || height <= 0)
             return;
@@ -413,7 +414,7 @@ public partial class CarouselXView
     }
 }
 
-public partial class CarouselXView
+public partial class CarouselxView
 {
     PeriodicTimer? _timer;
     readonly uint _animationLength = 800;
@@ -945,8 +946,22 @@ public partial class CarouselXView
     }
 }
 
-public partial class CarouselXView
+public partial class CarouselxView
 {
+    protected override void OnApplyTemplate()
+    {
+        base.OnApplyTemplate();
+
+        var templateObject = GetTemplateChild(nameof(PART_Container));
+        if (templateObject is AbsoluteLayout container)
+            PART_Container = container;
+        else
+            ArgumentNullException.ThrowIfNull(nameof(PART_Container));
+
+        PART_Container.Loaded += PART_Container_Loaded;
+        PART_Container.SizeChanged += PART_Container_SizeChanged;
+    }
+
     protected override void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         base.OnPropertyChanged(propertyName);

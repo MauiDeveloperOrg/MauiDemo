@@ -9,6 +9,73 @@ public partial class RollLoading : TemplatedView
     {
         InitializeComponent();
 
+        Loaded += RollLoading_Loaded;
+        SizeChanged += RollLoading_SizeChanged;
+    }
+
+    public static readonly BindableProperty RollBrushProperty = BindableProperty.Create(
+                                                                propertyName: nameof(RollBrush),
+                                                                returnType: typeof(Brush),
+                                                                declaringType: typeof(RollLoading),
+                                                                defaultValue: new LinearGradientBrush(new()
+                                                                {
+                                                                    new GradientStop{Color = Colors.Red , Offset = 0.5f},
+                                                                    new GradientStop{Color = Colors.Transparent, Offset = 0.5f},
+                                                                })
+                                                                {
+                                                                    StartPoint = new Point(0, 0),
+                                                                    EndPoint = new Point(1, 1),
+                                                                },
+                                                                defaultBindingMode: BindingMode.TwoWay);
+
+    public static readonly BindableProperty IsPlayProperty = BindableProperty.Create(
+                                                             propertyName: nameof(IsPlay),
+                                                             returnType: typeof(bool),
+                                                             declaringType: typeof(RollLoading),
+                                                             defaultValue: false,
+                                                             defaultBindingMode: BindingMode.TwoWay);
+
+    Border PART_Roll1 = default!;
+    Border PART_Roll2 = default!;
+    Border PART_Roll3 = default!;
+    Border PART_Roll4 = default!;
+    Border PART_Roll5 = default!;
+    Border PART_Roll6 = default!;
+    Border PART_Roll7 = default!;
+    Border PART_Roll8 = default!;
+
+
+    List<Animation> Animations { get; } = new();
+
+    public Brush RollBrush
+    {
+        get => (Brush)GetValue(RollBrushProperty);
+        set => SetValue(RollBrushProperty, value);
+    }
+
+    public bool IsPlay
+    {
+        get => (bool)GetValue(IsPlayProperty);
+        set => SetValue(IsPlayProperty, value);
+    }
+
+    private void RollLoading_Loaded(object? sender, EventArgs e)
+    {
+        CalculateSize();
+        PlayAnimation();
+    }
+    private void RollLoading_SizeChanged(object? sender, EventArgs e)
+    {
+        if (!IsLoaded)
+            return;
+        
+        CalculateSize();
+        PlayAnimation();
+    }
+
+    protected override void OnApplyTemplate()
+    {
+        base.OnApplyTemplate();
         var templateObject = GetTemplateChild(nameof(PART_Roll1));
         if (templateObject is Border border1)
             PART_Roll1 = border1;
@@ -56,69 +123,6 @@ public partial class RollLoading : TemplatedView
             PART_Roll8 = border8;
         else
             ArgumentNullException.ThrowIfNull(nameof(PART_Roll8));
-
-        Loaded += RollLoading_Loaded;
-        SizeChanged += RollLoading_SizeChanged;
-    }
-
-    public static readonly BindableProperty RollBrushProperty = BindableProperty.Create(
-                                                                propertyName: nameof(RollBrush),
-                                                                returnType: typeof(Brush),
-                                                                declaringType: typeof(RollLoading),
-                                                                defaultValue: new LinearGradientBrush(new()
-                                                                {
-                                                                    new GradientStop{Color = Colors.Red , Offset = 0.5f},
-                                                                    new GradientStop{Color = Colors.Transparent, Offset = 0.5f},
-                                                                })
-                                                                {
-                                                                    StartPoint = new Point(0, 0),
-                                                                    EndPoint = new Point(1, 1),
-                                                                },
-                                                                defaultBindingMode: BindingMode.TwoWay);
-
-    public static readonly BindableProperty IsPlayProperty = BindableProperty.Create(
-                                                             propertyName: nameof(IsPlay),
-                                                             returnType: typeof(bool),
-                                                             declaringType: typeof(RollLoading),
-                                                             defaultValue: false,
-                                                             defaultBindingMode: BindingMode.TwoWay);
-
-    readonly Border PART_Roll1 = default!;
-    readonly Border PART_Roll2 = default!;
-    readonly Border PART_Roll3 = default!;
-    readonly Border PART_Roll4 = default!;
-    readonly Border PART_Roll5 = default!;
-    readonly Border PART_Roll6 = default!;
-    readonly Border PART_Roll7 = default!;
-    readonly Border PART_Roll8 = default!;
-
-
-    List<Animation> Animations { get; } = new();
-
-    public Brush RollBrush
-    {
-        get => (Brush)GetValue(RollBrushProperty);
-        set => SetValue(RollBrushProperty, value);
-    }
-
-    public bool IsPlay
-    {
-        get => (bool)GetValue(IsPlayProperty);
-        set => SetValue(IsPlayProperty, value);
-    }
-
-    private void RollLoading_Loaded(object? sender, EventArgs e)
-    {
-        CalculateSize();
-        PlayAnimation();
-    }
-    private void RollLoading_SizeChanged(object? sender, EventArgs e)
-    {
-        if (!IsLoaded)
-            return;
-        
-        CalculateSize();
-        PlayAnimation();
     }
 
     protected override void OnHandlerChanged()
