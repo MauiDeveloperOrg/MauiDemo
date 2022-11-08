@@ -5,6 +5,7 @@
              xmlns:viewmodels="using:MauiApp8.ViewModels"
              xmlns:views="using:MauiApp8.Views"
              xmlns:customcontrols="using:MauiApp8.CustomControls" 
+             xmlns:drawings="clr-namespace:MauiApp8.Drawings"
              xmlns:layouts="clr-namespace:MauiApp8.Layouts"
              x:Class="MauiApp8.Views.MainPage"
              Title="MainPage">
@@ -12,6 +13,7 @@
     <ScrollView>
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -53,6 +55,12 @@
                     </DataTemplate>
                 </customcontrols:CarouselzView.ItemTemplate>
             </customcontrols:CarouselzView>
+
+            <GraphicsView Grid.Row="6" HeightRequest="600">
+                <GraphicsView.Drawable>
+                    <drawings:ShapeDrawable/>
+                </GraphicsView.Drawable>
+            </GraphicsView>
 
             <Grid Grid.Row="10" RowDefinitions="60,*">
                 <HorizontalStackLayout Margin="10" Grid.Row="0">
