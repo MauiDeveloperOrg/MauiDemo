@@ -1,3 +1,4 @@
+using MauiApp8.Assists; 
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -6,12 +7,12 @@ namespace MauiApp8.CustomControls;
 
 public partial class CarouselzView : TemplatedView
 {
-	public CarouselzView()
-	{
-		InitializeComponent();
+    public CarouselzView()
+    {
+        InitializeComponent();
         BackgroundColor = Colors.Transparent;
         WidthRequest = 1000d;
-        HeightRequest = 350d;
+        HeightRequest = 450d;
         Padding = new(0d);
     }
 
@@ -162,7 +163,7 @@ public partial class CarouselzView : TemplatedView
         if (bindable is not CarouselzView view)
             return;
 
- 
+
     }
 
     private static void OnLoopPropertyChanged(BindableObject bindable, object oldValue, object newValue)
@@ -170,7 +171,7 @@ public partial class CarouselzView : TemplatedView
         if (bindable is not CarouselzView view)
             return;
 
-      
+
     }
 
 }
@@ -178,9 +179,11 @@ public partial class CarouselzView : TemplatedView
 public partial class CarouselzView
 {
     readonly double _scal = 0.3;
+    readonly double _offset = 20d;
+    readonly double _maxHeight = 80d;
     readonly Dictionary<int, View> _mapViews = new();
     readonly Dictionary<int, Rect> _mapDockRects = new();
-    readonly Dictionary<int, View> _mapRealView = new();
+    readonly Dictionary<int, int> _mapRealViewInDocks = new();
 
     AbsoluteLayout PART_Container = default!;
     Rect _showPanel;
@@ -236,15 +239,36 @@ public partial class CarouselzView
             return;
 
         var rectHeight = height * _scal;
-        _showPanel = new Rect(0, 0, width, height - rectHeight);
+        if (rectHeight > _maxHeight)
+            rectHeight = _maxHeight;
+        _showPanel = new Rect(0, 0, width, height - rectHeight - _offset);
         _dockPanel = new Rect(0, height - rectHeight, width, rectHeight);
+    }
+
+    void CalculateRect(int count)
+    {
+        if (count <= 0)
+            return;
+        double avgWidth = _dockPanel.Width / count;
+        if (avgWidth <= 0)
+            return;
+        double left = 0;
+        double top = _dockPanel.Top;
+        double height = _dockPanel.Height;
+
+        for (int i = 0; i < count; i++)
+        {
+            left = i * avgWidth;
+            var rect = new Rect(left, top, avgWidth, height);
+            _mapDockRects[i] = rect;
+        }
     }
 
     void CreateChildren()
     {
         _mapViews.Clear();
         _mapDockRects.Clear();
-        _mapRealView.Clear();
+        _mapRealViewInDocks.Clear();
         VisibleViews.Clear();
         PART_Container.Clear();
         if (!ItemsSource?.GetEnumerator().MoveNext() ?? true)
@@ -253,8 +277,44 @@ public partial class CarouselzView
             return;
         }
 
+        int index = 0;
+        foreach (var item in ItemsSource!)
+        {
+            var view = CreateItemView(item);
+            ViewAssists.SetTag(view, index);
+            VisibleViews.Add(view);
+            PART_Container.Add(view);
+            _mapViews[index] = view;
+            ++index;
 
+            var tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
+            view.GestureRecognizers.Add(tapGestureRecognizer);
+        }
 
+        if (_mapViews.TryGetValue(_currentIndex, out var showView))
+            AbsoluteLayout.SetLayoutBounds(showView, _showPanel);
+
+        CalculateRect(index - 1);
+        MoveChildren();
+    }
+
+    void MoveChildren()
+    {
+        int realIndex = 0;
+        for (int i = 0; i < VisibleViews.Count; i++)
+        {
+            if (i == _currentIndex)
+                continue;
+
+            if (!_mapDockRects.TryGetValue(realIndex, out var rect))
+                continue;
+
+            AbsoluteLayout.SetLayoutBounds(VisibleViews[i], rect);
+            _mapRealViewInDocks[i] = realIndex;
+
+            ++realIndex;
+        }
     }
 
     View CreateEmptyView(object? emptyView, DataTemplate? dataTemplate)
@@ -285,4 +345,85 @@ public partial class CarouselzView
             return view;
         }
     }
+
+    private void TapGestureRecognizer_Tapped(object? sender, EventArgs e)
+    {
+        if (sender is not View view)
+            return;
+
+        CommitAnimation(view);
+    }
+
 }
+
+public partial class CarouselzView
+{
+    void CommitAnimation(View view)
+    {
+        if (ViewAssists.GetTag(view) is not int index)
+            return;
+
+        if (_currentIndex == index)
+            return;
+
+        int realIndex = 0;
+        Dictionary<int, View> mapDockViews = new();
+        for (int i = 0; i < VisibleViews.Count; i++)
+        {
+            if (i == index)
+                continue;
+
+            mapDockViews[realIndex] = VisibleViews[i];
+            ++realIndex;
+        }
+
+        var animation = new Animation();
+
+        {
+            view.ZIndex = 1;
+            var rect = AbsoluteLayout.GetLayoutBounds(view);
+            var move2Rect = _showPanel;
+
+            var newRect = new Rect((move2Rect.Width - rect.Width) / 2, (move2Rect.Height - rect.Height) / 2, rect.Width, rect.Height);
+            double scalw = move2Rect.Width / rect.Width;
+            double scalh = move2Rect.Height / rect.Height;
+            double scalx = newRect.X - rect.X;
+            double scaly = newRect.Y - rect.Y;
+
+            var moveAnimation = new Animation(s =>
+            {
+                double newX = scalx * s + rect.X;
+                double newY = scaly * s + rect.Y;
+
+                var pRect = new Rect(newX, newY, rect.Width, rect.Height);
+                AbsoluteLayout.SetLayoutBounds(view, pRect);
+            }, 0, 1);
+            animation.Insert(0, 0.5, moveAnimation);
+
+            var transAnimation = new Animation(s =>
+            {
+                double newWidth = scalw * s * rect.Width;
+                double newHeight = scalh * s * rect.Height;
+                double newX = (move2Rect.Width - newWidth) / 2;
+                double newY = (move2Rect.Height - newHeight) / 2;
+
+                var pRect = new Rect(newX, newY, newWidth, newHeight);
+                AbsoluteLayout.SetLayoutBounds(view, pRect);
+            }, 0, 1);
+            animation.Insert(0.5, 1, transAnimation);
+        }
+
+        animation.Commit(this, $"MoveAnimation{Guid.NewGuid()}", length: 1000, easing: Easing.SinInOut, finished: (d, b) =>
+        {
+            _currentIndex = index;
+            view.ZIndex = 0;
+            animation.Dispose();
+        });
+    }
+
+
+
+
+
+}
+

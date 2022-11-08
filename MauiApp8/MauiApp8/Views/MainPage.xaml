@@ -9,9 +9,10 @@
              x:Class="MauiApp8.Views.MainPage"
              Title="MainPage">
 
-    <!--<ScrollView>-->
+    <ScrollView>
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -37,11 +38,21 @@
                 <customcontrols:CarouselxView.ItemTemplate>
                     <DataTemplate>
                         <Border BackgroundColor="{Binding Color}" StrokeThickness="0">
-                            
+
                         </Border>
                     </DataTemplate>
                 </customcontrols:CarouselxView.ItemTemplate>
             </customcontrols:CarouselxView>
+
+            <customcontrols:CarouselzView Grid.Row="5" ItemsSource="{Binding Students}" BackgroundColor="Transparent" Loop="False" Interval="1000">
+                <customcontrols:CarouselzView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BackgroundColor="{Binding Color}" StrokeThickness="0">
+
+                        </Border>
+                    </DataTemplate>
+                </customcontrols:CarouselzView.ItemTemplate>
+            </customcontrols:CarouselzView>
 
             <Grid Grid.Row="10" RowDefinitions="60,*">
                 <HorizontalStackLayout Margin="10" Grid.Row="0">
@@ -71,9 +82,9 @@
                          IsVisible="{Binding IsUser}" />
 
             </Grid>
- 
-            
+
+
 
         </Grid>
-    <!--</ScrollView>-->
+    </ScrollView>
 </ContentPage>

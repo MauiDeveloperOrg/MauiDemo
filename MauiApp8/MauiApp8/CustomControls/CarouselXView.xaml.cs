@@ -227,6 +227,7 @@ public partial class CarouselxView
             case NotifyCollectionChangedAction.Move:
                 break;
             case NotifyCollectionChangedAction.Reset:
+                CreateChildren();
                 break;
             default:
                 break;
