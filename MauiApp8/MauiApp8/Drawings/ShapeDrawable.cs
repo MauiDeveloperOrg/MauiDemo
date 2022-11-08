@@ -17,9 +17,9 @@ public class ShapeDrawable : IDrawable
 
         canvas.BlendMode = BlendMode.Luminosity;
 
+        canvas.SetShadow(new SizeF(10, 10), 10, Colors.Red);
         canvas.FillColor = Colors.Cyan;
         canvas.FillCircle(center1, radius);
-
         canvas.FillColor = Colors.Magenta;
         canvas.FillCircle(center2, radius);
 
