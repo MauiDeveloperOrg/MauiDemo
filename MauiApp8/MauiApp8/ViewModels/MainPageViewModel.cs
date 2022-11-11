@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using AndroidX.Emoji2.Text.FlatBuffer;
+using CommunityToolkit.Mvvm.ComponentModel;
 using MauiApp8.Models;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -9,7 +10,7 @@ public partial class MainPageViewModel : BasicViewModel
 {
     public MainPageViewModel()
     {
-
+        //byte[] bytes = "123132"u8;
         var random = new Random();
         for (int i = 0; i < 10; i++)
         {
