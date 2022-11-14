@@ -6,6 +6,9 @@ using MicrosoftuiWindowing = Microsoft.UI.Windowing;
 using MicrosoftuiXaml = Microsoft.UI.Xaml;
 using Microsoftui = Microsoft.UI;
 using MicrosoftuixmlMedia = Microsoft.UI.Xaml.Media;
+using System.Reflection;
+using MauiApp1.Extensions;
+using MicrosoftuixamlData = Microsoft.UI.Xaml.Data;
 #endif
 
 
@@ -18,7 +21,69 @@ public partial class MainPage : ContentPage
 		InitializeComponent();
     }
 
-	private void Button_Clicked(object sender, EventArgs e)
+#if WINDOWS
+
+    private MicrosoftuiXaml.Thickness _NavigationViewContentMargin;
+    public MicrosoftuiXaml.Thickness NavigationViewContentMargin
+    {
+        get => _NavigationViewContentMargin;
+        set
+        {
+            _NavigationViewContentMargin = value;
+
+            var mauiContext = this.RequireMauiContext();
+            if (mauiContext is null)
+                return;
+             
+            var windowRootView = mauiContext.GetNavigationRootManager().RootView as WindowRootView;
+            var navigationView = windowRootView?.NavigationViewControl;
+            if (navigationView is null)
+                return;
+
+            var thicknessProperty = typeof(RootNavigationView).GetProperty("NavigationViewContentMargin", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (thicknessProperty?.GetValue(navigationView) is MicrosoftuiXaml.Thickness thickness)
+            {
+                if (thickness == new MicrosoftuiXaml.Thickness(0))
+                    return;
+
+                thicknessProperty.SetValue(navigationView, new MicrosoftuiXaml.Thickness(0));
+            }
+        }
+    }
+
+    bool _IsBinding = false;
+
+    bool SetBindingConfig()
+    {
+        var mauiContext = this.RequireMauiContext();
+        if (mauiContext is null)
+            return false;
+
+        var windowRootView = mauiContext.GetNavigationRootManager().RootView as WindowRootView;
+        var navigationView = windowRootView?.NavigationViewControl;
+        if (navigationView is null)
+            return false;
+
+        var contentProperty = typeof(RootNavigationView).GetProperty("ContentGrid", BindingFlags.Instance | BindingFlags.NonPublic);
+        if (contentProperty is null)
+            return false;
+
+        var contentGrid = contentProperty.GetValue(navigationView);
+        if (contentGrid is not MicrosoftuiXaml.FrameworkElement frameworkELement)
+            return false;
+
+        MicrosoftuixamlData.Binding marginBinding = new();
+        marginBinding.Source = this;
+        marginBinding.Path = new MicrosoftuiXaml.PropertyPath("NavigationViewContentMargin");
+        marginBinding.Mode = MicrosoftuixamlData.BindingMode.TwoWay;
+        marginBinding.UpdateSourceTrigger = MicrosoftuixamlData.UpdateSourceTrigger.PropertyChanged;
+        MicrosoftuixamlData.BindingOperations.SetBinding(frameworkELement, MicrosoftuiXaml.FrameworkElement.MarginProperty, marginBinding);
+
+        return true;
+    }
+
+#endif
+    private void Button_Clicked(object sender, EventArgs e)
 	{
 #if WINDOWS
         var winuiWindow = Window.Handler?.PlatformView as MicrosoftuiXaml.Window;
@@ -155,6 +220,11 @@ public partial class MainPage : ContentPage
         winuiWindow.ExtendsContentIntoTitleBar = false;
         var customOverlappedPresenter = MicrosoftuiWindowing.OverlappedPresenter.CreateForContextMenu();
         appWindow.SetPresenter(customOverlappedPresenter);
+
+        if (!_IsBinding)
+            SetBindingConfig();
+
+        NavigationViewContentMargin = new MicrosoftuiXaml.Thickness(0);
 #endif
     }
 
