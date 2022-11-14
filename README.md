@@ -25,7 +25,7 @@
 
 - MauiApp7: 这是一个使用skiasharp 播放Confetti动画的demo
 
-- MauiApp8: 这是一个自定义控件的demo，你可以创建outlineEntry and progressbutton
+- MauiApp8: 这是一个自定义控件的demo，你可以创建outlineEntry and progressbutton, 轮播控件等等
 
 - MauiApp9: 这是使用Plugin.Maui.Audio库播放音频的教程
 
