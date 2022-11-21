@@ -20,6 +20,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <customcontrols:ProgressButton HorizontalOptions="Center" VerticalOptions="Center" Text="Loading" IsInProgressing="{Binding IsInProgress}" Padding="10">
@@ -61,6 +62,12 @@
                     <drawings:ShapeDrawable/>
                 </GraphicsView.Drawable>
             </GraphicsView>
+
+            <customcontrols:Expander Grid.Row="7">
+                <customcontrols:Expander.Content>
+                    <Grid HeightRequest="100" BackgroundColor="Green"/>
+                </customcontrols:Expander.Content>
+            </customcontrols:Expander>
 
             <Grid Grid.Row="10" RowDefinitions="60,*">
                 <HorizontalStackLayout Margin="10" Grid.Row="0">

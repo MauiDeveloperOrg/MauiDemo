@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TemplatedView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               x:Class="MauiApp8.CustomControls.Expander"
+               x:Name="this">
+    <TemplatedView.ControlTemplate>
+        <ControlTemplate>
+            <Border Stroke="{TemplateBinding BorderColor}" StrokeThickness="{TemplateBinding BorderThickness}" Margin="-1,-2,-1,0">
+                <StackLayout Orientation="Vertical">
+                    <Border Background="LightGray" HeightRequest="30" Stroke="Transparent" StrokeThickness="0" Padding="5,1,5,1">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{TemplateBinding TappedCommand}"/>
+                        </Border.GestureRecognizers>
+                        <StackLayout Orientation="Horizontal">
+                            <Image Source="dotnet_bot.png"/>
+                            <Frame x:Name="PART_Header" BackgroundColor="Transparent" CornerRadius="0" BorderColor="Transparent"  Padding="0" Margin="0,0,0,0" />
+                        </StackLayout>
+                    </Border>
+
+                    <Frame x:Name="PART_ContentDock" BackgroundColor="Transparent" VerticalOptions="StartAndExpand" CornerRadius="0" BorderColor="Transparent" Padding="0" Margin="0,0,0,0" Content="{TemplateBinding Content}" />
+                </StackLayout>
+            </Border>
+            
+        </ControlTemplate>
+    </TemplatedView.ControlTemplate>
+</TemplatedView>

@@ -1,5 +1,4 @@
-﻿using AndroidX.Emoji2.Text.FlatBuffer;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using MauiApp8.Models;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -40,7 +39,7 @@ public partial class MainPageViewModel : BasicViewModel
 
         TappedCommand = new Command<object>(t =>
         {
-            IsInProgress = !IsInProgress; 
+            IsInProgress = !IsInProgress;
         });
     }
 
