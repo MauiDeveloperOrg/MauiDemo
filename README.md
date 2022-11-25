@@ -5,6 +5,7 @@
 1  你可以通过Native的方式在Maui中使用到Windows平台的控件映射
 2  你可以对Maui Windows平台的控件进行深度定制
 3  可以去掉Maui Windows平台上的标题栏等一系列东西
+4  去掉标题栏后窗口可拖动功能
     
 - MauiApp2: 这是一个涉及到Shell导航的Demo
 1  你可以通过这个demo学习到Shell的导航方式
