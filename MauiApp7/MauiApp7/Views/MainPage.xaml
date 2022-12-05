@@ -2,19 +2,26 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:skiasharp="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:skiasharpcontrols="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
              x:Class="MauiApp6.Views.MainPage"
              Title="MainPage">
 
-    <Grid>
-
-        <skiasharp:SKConfettiView>
+    <Grid x:Name="PART_Container">
+       
+        <!--<skiasharp:SKConfettiView>
             <skiasharp:SKConfettiView.GestureRecognizers>
                 <TapGestureRecognizer NumberOfTapsRequired="2"  Tapped="TapGestureRecognizer_Tapped"/>
             </skiasharp:SKConfettiView.GestureRecognizers>
             
-        </skiasharp:SKConfettiView>
-                                
+        </skiasharp:SKConfettiView>-->
 
+        <skiasharpcontrols:SKCanvasView PaintSurface="SKCanvasView_PaintSurface">
+
+        </skiasharpcontrols:SKCanvasView>
+
+        <Button Text="12312313" WidthRequest="120" HeightRequest="40">
+
+        </Button>
     </Grid>
     
     
